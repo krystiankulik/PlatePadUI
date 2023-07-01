@@ -61,6 +61,11 @@ export const LogIn = () => {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
+          backgroundColor: "white",
+          margin: "2rem",
+          padding: "3rem",
+          boxShadow: "inset 0 0 8px #4b4a4a",
+          borderRadius: "10px"
         }}
       >
         <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>

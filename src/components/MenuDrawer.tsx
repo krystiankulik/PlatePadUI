@@ -29,14 +29,33 @@ import { Route, Routes, useNavigate } from "react-router-dom";
 import { ConfirmEmail } from "./ConfirmEmail";
 import { LogIn } from "./LogIn";
 import { SignUp } from "./Signup";
+import { Recipes } from "./Recipes";
+import { Ingredient, Recipe } from "../model/model";
+import { api } from "../api";
+import { AxiosError, isAxiosError } from "axios";
+import useAuthToken from "../logic/useAuthToken";
+import { Ingredients } from "./Ingredients";
 
 const drawerWidth = 240;
 
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
-  open?: boolean;
-}>(({ theme, open }) => ({
-  padding: theme.spacing(3)
-}));
+    open?: boolean;
+  }>(({ theme, open }) => ({
+    flexGrow: 1,
+    padding: theme.spacing(3),
+    transition: theme.transitions.create("margin", {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+    marginLeft: `-${drawerWidth}px`,
+    ...(open && {
+      transition: theme.transitions.create("margin", {
+        easing: theme.transitions.easing.easeOut,
+        duration: theme.transitions.duration.enteringScreen,
+      }),
+      marginLeft: 0,
+    }),
+  }));
 
 interface AppBarProps extends MuiAppBarProps {
   open?: boolean;
@@ -75,6 +94,31 @@ export function MenuDrawer(props: Props) {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
 
+  const [ingredients, setIngredients] = useState<Ingredient[]>([]);
+  const {token} = useAuthToken();
+
+  const openRecipes = async () => {
+      navigate('/my-recipes');
+  };
+
+  const openIngredients = async () => {
+    await api
+     .get("/api/ingredients", {headers: {Authorization: `Bearer ${token?.trim()}`}})
+     .then((response) => {
+       console.log(response);
+       setIngredients(response.data);
+     })
+     .catch((err: Error | AxiosError) => {
+       if (isAxiosError(err)) {
+         console.log(err.response?.data.message);
+       } else {
+         console.log(err);
+       }
+     });
+     navigate('/my-ingredients');
+ };
+
+
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -103,7 +147,7 @@ export function MenuDrawer(props: Props) {
   return (
     <Box >
       <CssBaseline />
-      <AppBar position="fixed" open={open}>
+      <AppBar position="fixed" open={open} style={{boxShadow: "inset 0 -10px 10px -10px #888"}}>
         <Toolbar>
           <IconButton
             color="inherit"
@@ -149,7 +193,7 @@ export function MenuDrawer(props: Props) {
         <Divider />
         <List>
           <ListItem key={"My Recipes"} disablePadding>
-            <ListItemButton>
+            <ListItemButton onClick={openRecipes}>
               <ListItemIcon>
                 <MenuBook />
               </ListItemIcon>
@@ -157,7 +201,7 @@ export function MenuDrawer(props: Props) {
             </ListItemButton>
           </ListItem>
           <ListItem key={"My Ingredients"} disablePadding>
-            <ListItemButton>
+            <ListItemButton onClick={openIngredients}>
               <ListItemIcon>
                 <ShoppingBasket />
               </ListItemIcon>
@@ -200,6 +244,8 @@ export function MenuDrawer(props: Props) {
           <Route path="/login" element={<LogIn />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/confirm-email" element={<ConfirmEmail />} />
+          <Route path="/my-recipes" element={<Recipes />} />
+          <Route path="/my-ingredients" element={<Ingredients ingredients={ingredients}/>} />
         </Routes>
       </Main>
     </Box>
