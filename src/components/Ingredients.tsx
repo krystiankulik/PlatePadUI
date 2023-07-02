@@ -52,7 +52,7 @@ export const Ingredients: React.FC = () => {
                 <TableCell
                   component="th"
                   scope="row"
-                  onClick={() => navigate(`/ingredients/${ingredient.name}`)}
+                  onClick={() => navigate(`/my-ingredients/${ingredient.name}`)}
                   style={{ cursor: "pointer" }}
                 >
                   {ingredient.displayName}

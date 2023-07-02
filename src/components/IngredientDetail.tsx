@@ -1,4 +1,5 @@
 import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 import {
   Alert,
   Box,
@@ -12,12 +13,12 @@ import {
 } from "@mui/material";
 import { red } from "@mui/material/colors";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { AxiosError } from "axios";
-import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { api } from "../api";
 import useAuthToken from "../logic/useAuthToken";
 import { Ingredient } from "../model/model";
+import { api } from "../api";
+import { AxiosError } from "axios";
+import { useState } from "react";
 
 const IngredientDetail: React.FC = () => {
   const { name } = useParams();
@@ -25,16 +26,16 @@ const IngredientDetail: React.FC = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const fetchIngredients = () =>
+  const fetchIngredient = () =>
     api
-      .get("/api/ingredients", {
+      .get(`/api/ingredients/${name}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => response.data);
 
-  const ingredientsQuery = useQuery<Ingredient[], AxiosError<any>>({
-    queryKey: ["my-ingredients"],
-    queryFn: fetchIngredients,
+  const ingredientQuery = useQuery<Ingredient, AxiosError<any>>({
+    queryKey: ["ingredient", name],
+    queryFn: fetchIngredient,
   });
 
   const deleteMutation = useMutation<any, AxiosError<any>, string>(
@@ -45,13 +46,12 @@ const IngredientDetail: React.FC = () => {
     {
       onSuccess: () => {
         handleClose();
-        queryClient.invalidateQueries({ queryKey: ["my-ingredients"] });
         navigate("/my-ingredients");
       },
     }
   );
 
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -61,11 +61,11 @@ const IngredientDetail: React.FC = () => {
     setOpen(false);
   };
 
-  if (ingredientsQuery.isLoading) return <CircularProgress />;
-  if (ingredientsQuery.isError) {
+  if (ingredientQuery.isLoading) return <CircularProgress />;
+  if (ingredientQuery.isError) {
     return (
       <Alert severity="error">
-        {ingredientsQuery.error.response?.data.message}
+        {ingredientQuery.error.response?.data.message}
       </Alert>
     );
   }
@@ -79,13 +79,15 @@ const IngredientDetail: React.FC = () => {
     );
   }
 
-  const ingredient = ingredientsQuery.data.find(
-    (ingredient) => ingredient.name === name
-  );
+  const ingredient = ingredientQuery.data;
 
   if (!ingredient) {
     return <Alert severity="error">{"Ingredient not found"}</Alert>;
   }
+
+  const handleEdit = () => {
+    navigate(`/my-ingredients/${ingredient.name}/edit`);
+  };
 
   const renderDialog = () => (
     <Dialog
@@ -126,6 +128,25 @@ const IngredientDetail: React.FC = () => {
         position: "relative",
       }}
     >
+      <Button
+        onClick={handleEdit}
+        sx={{
+          position: "absolute",
+          top: 8,
+          right: 32,
+          minWidth: 10,
+          padding: 0,
+        }}
+      >
+        <EditIcon
+          sx={{
+            width: 16,
+            height: 16,
+            color: "grey",
+            "&:hover": { color: "#5d71e2" },
+          }}
+        />
+      </Button>
       <Button
         onClick={handleClickOpen}
         sx={{

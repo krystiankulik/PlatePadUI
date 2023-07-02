@@ -37,6 +37,7 @@ import useAuthToken from "../logic/useAuthToken";
 import { Ingredients } from "./Ingredients";
 import { isMobile } from "react-device-detect";
 import IngredientDetail from "./IngredientDetail";
+import IngredientEdit from "./IngredientEdit";
 
 const drawerWidth = 240;
 
@@ -238,14 +239,30 @@ export function MenuDrawer(props: Props) {
       </Drawer>
       <Main open={open}>
         <DrawerHeader />
-        <Routes>
-          <Route path="/login" element={<LogIn />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/confirm-email" element={<ConfirmEmail />} />
-          <Route path="/my-recipes" element={<Recipes />} />
-          <Route path="/my-ingredients" element={<Ingredients />} />
-          <Route path="/ingredients/:name" element={<IngredientDetail />} />
-        </Routes>
+        <Box
+          sx={{
+            width: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center"
+          }}
+        >
+          <Routes>
+            <Route path="/login" element={<LogIn />} />
+            <Route path="/signup" element={<SignUp />} />
+            <Route path="/confirm-email" element={<ConfirmEmail />} />
+            <Route path="/my-recipes" element={<Recipes />} />
+            <Route path="/my-ingredients" element={<Ingredients />} />
+            <Route
+              path="/my-ingredients/:name"
+              element={<IngredientDetail />}
+            />
+            <Route
+              path="/my-ingredients/:name/edit"
+              element={<IngredientEdit />}
+            />
+          </Routes>
+        </Box>
       </Main>
     </Box>
   );
