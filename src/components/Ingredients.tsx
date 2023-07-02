@@ -29,7 +29,7 @@ export const Ingredients: React.FC = () => {
       .then((response) => response.data);
 
   const { isLoading, isError, data, error } = useQuery<Ingredient[], Error>({
-    queryKey: ["ingredients"],
+    queryKey: ["my-ingredients"],
     queryFn: fetchIngredients,
   });
 

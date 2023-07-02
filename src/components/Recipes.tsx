@@ -23,7 +23,7 @@ export const Recipes: React.FC = () => {
     Recipe[],
     AxiosError<any>
   >({
-    queryKey: ["recipes"],
+    queryKey: ["my-recipes"],
     queryFn: fetchRecipes,
   });
 

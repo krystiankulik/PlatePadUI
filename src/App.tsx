@@ -6,6 +6,7 @@ import { ConfirmEmail } from "./components/ConfirmEmail";
 import { LogIn } from "./components/LogIn";
 import { MenuDrawer } from "./components/MenuDrawer";
 import { SignUp } from "./components/Signup";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -53,6 +54,7 @@ function App() {
           </MenuDrawer>
         </BrowserRouter>
       </ThemeProvider>
+      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
 }
