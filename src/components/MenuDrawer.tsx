@@ -38,6 +38,7 @@ import { Ingredients } from "./Ingredients";
 import { isMobile } from "react-device-detect";
 import IngredientDetail from "./IngredientDetail";
 import IngredientEdit from "./IngredientEdit";
+import RecipeDetail from "./RecipeDetail";
 
 const drawerWidth = 240;
 
@@ -244,7 +245,7 @@ export function MenuDrawer(props: Props) {
             width: "100%",
             display: "flex",
             alignItems: "center",
-            justifyContent: "center"
+            justifyContent: "center",
           }}
         >
           <Routes>
@@ -261,6 +262,7 @@ export function MenuDrawer(props: Props) {
               path="/my-ingredients/:name/edit"
               element={<IngredientEdit />}
             />
+            <Route path="/my-recipes/:name" element={<RecipeDetail />} />
           </Routes>
         </Box>
       </Main>

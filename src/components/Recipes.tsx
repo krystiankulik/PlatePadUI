@@ -41,13 +41,21 @@ export const Recipes: React.FC = () => {
             }}
             key={recipe.name}
           >
-            <Typography variant="h5">{recipe.displayName}</Typography>
-            <MacroValues
-              calories={recipe.macro.calories}
-              fats={recipe.macro.fats}
-              proteins={recipe.macro.proteins}
-              carbs={recipe.macro.carbohydrates}
-            />
+            <Typography
+              variant="h5"
+              style={{ cursor: "pointer" }}
+              onClick={() => navigate(`/my-recipes/${recipe.name}`)}
+            >
+              {recipe.displayName}
+            </Typography>
+            <Box style={{paddingTop: "2rem"}}>
+              <MacroValues
+                calories={recipe.macro.calories}
+                fats={recipe.macro.fats}
+                proteins={recipe.macro.proteins}
+                carbs={recipe.macro.carbohydrates}
+              />
+            </Box>
           </Box>
         ))
       : null;

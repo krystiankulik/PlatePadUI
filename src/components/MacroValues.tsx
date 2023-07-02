@@ -6,7 +6,6 @@ const Container = styled(Grid)({
     padding: '5px',
     border: '1px solid #ddd',
     borderRadius: '5px',
-    marginTop: '2rem'
 });
 
 const Cell = styled(Grid)({

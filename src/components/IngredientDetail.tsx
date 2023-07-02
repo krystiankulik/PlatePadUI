@@ -44,7 +44,8 @@ const IngredientDetail: React.FC = () => {
         headers: { Authorization: `Bearer ${token}` },
       }),
     {
-      onSuccess: () => {
+      onSuccess: async () => {
+        await queryClient.refetchQueries({ queryKey: ["my-ingredients"] });
         handleClose();
         navigate("/my-ingredients");
       },
