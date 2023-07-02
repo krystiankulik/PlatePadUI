@@ -35,27 +35,29 @@ import { api } from "../api";
 import { AxiosError, isAxiosError } from "axios";
 import useAuthToken from "../logic/useAuthToken";
 import { Ingredients } from "./Ingredients";
+import { isMobile } from "react-device-detect";
+import IngredientDetail from "./IngredientDetail";
 
 const drawerWidth = 240;
 
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
-    open?: boolean;
-  }>(({ theme, open }) => ({
-    flexGrow: 1,
-    padding: theme.spacing(3),
+  open?: boolean;
+}>(({ theme, open }) => ({
+  flexGrow: 1,
+  padding: theme.spacing(3),
+  transition: theme.transitions.create("margin", {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen,
+  }),
+  marginLeft: 0,
+  ...(open && {
     transition: theme.transitions.create("margin", {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen,
     }),
-    marginLeft: `-${drawerWidth}px`,
-    ...(open && {
-      transition: theme.transitions.create("margin", {
-        easing: theme.transitions.easing.easeOut,
-        duration: theme.transitions.duration.enteringScreen,
-      }),
-      marginLeft: 0,
-    }),
-  }));
+    marginLeft: `${drawerWidth}px`,
+  }),
+}));
 
 interface AppBarProps extends MuiAppBarProps {
   open?: boolean;
@@ -68,6 +70,7 @@ const AppBar = styled(MuiAppBar, {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
+
   ...(open && {
     width: `calc(100% - ${drawerWidth}px)`,
     marginLeft: `${drawerWidth}px`,
@@ -94,30 +97,21 @@ export function MenuDrawer(props: Props) {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
 
-  const [ingredients, setIngredients] = useState<Ingredient[]>([]);
-  const {token} = useAuthToken();
+  const { token } = useAuthToken();
 
-  const openRecipes = async () => {
-      navigate('/my-recipes');
+  const openRecipes = () => {
+    if (isMobile) {
+      setOpen(false);
+    }
+    navigate("/my-recipes");
   };
 
-  const openIngredients = async () => {
-    await api
-     .get("/api/ingredients", {headers: {Authorization: `Bearer ${token?.trim()}`}})
-     .then((response) => {
-       console.log(response);
-       setIngredients(response.data);
-     })
-     .catch((err: Error | AxiosError) => {
-       if (isAxiosError(err)) {
-         console.log(err.response?.data.message);
-       } else {
-         console.log(err);
-       }
-     });
-     navigate('/my-ingredients');
- };
-
+  const openIngredients = () => {
+    if (isMobile) {
+      setOpen(false);
+    }
+    navigate("/my-ingredients");
+  };
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -145,9 +139,13 @@ export function MenuDrawer(props: Props) {
   };
 
   return (
-    <Box >
+    <Box>
       <CssBaseline />
-      <AppBar position="fixed" open={open} style={{boxShadow: "inset 0 -10px 10px -10px #888"}}>
+      <AppBar
+        position="fixed"
+        open={open}
+        style={{ boxShadow: "inset 0 -10px 10px -10px #888" }}
+      >
         <Toolbar>
           <IconButton
             color="inherit"
@@ -170,10 +168,10 @@ export function MenuDrawer(props: Props) {
       </AppBar>
       <Drawer
         sx={{
-          width: drawerWidth,
+          width: isMobile ? "100vw" : drawerWidth,
           flexShrink: 0,
           "& .MuiDrawer-paper": {
-            width: drawerWidth,
+            width: isMobile ? "100vw" : drawerWidth,
             boxSizing: "border-box",
           },
         }}
@@ -245,7 +243,8 @@ export function MenuDrawer(props: Props) {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/confirm-email" element={<ConfirmEmail />} />
           <Route path="/my-recipes" element={<Recipes />} />
-          <Route path="/my-ingredients" element={<Ingredients ingredients={ingredients}/>} />
+          <Route path="/my-ingredients" element={<Ingredients />} />
+          <Route path="/ingredients/:name" element={<IngredientDetail />} />
         </Routes>
       </Main>
     </Box>

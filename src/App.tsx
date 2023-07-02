@@ -1,12 +1,11 @@
-import React from "react";
-import "./App.css";
-import { LogIn } from "./components/LogIn";
-import { SignUp } from "./components/Signup";
-import { ConfirmEmail } from "./components/ConfirmEmail";
-import { MenuDrawer } from "./components/MenuDrawer";
 import { createTheme, ThemeProvider } from "@mui/material";
-import { BrowserRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter } from "react-router-dom";
+import "./App.css";
+import { ConfirmEmail } from "./components/ConfirmEmail";
+import { LogIn } from "./components/LogIn";
+import { MenuDrawer } from "./components/MenuDrawer";
+import { SignUp } from "./components/Signup";
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -32,7 +31,7 @@ function App() {
     },
     palette: {
       background: {
-        default: "#313131",
+        default: "#575757",
       },
       primary: {
         main: "#f5ab8d",

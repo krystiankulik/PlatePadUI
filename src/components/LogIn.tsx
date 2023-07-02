@@ -1,5 +1,5 @@
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import { Alert } from "@mui/material";
+import { Alert, CircularProgress } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -13,41 +13,75 @@ import { useState } from "react";
 import { api } from "../api";
 import { AxiosError, isAxiosError } from "axios";
 import useAuthToken from "../logic/useAuthToken";
+import { useMutation } from "@tanstack/react-query";
+import { LoginRounded } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
+
+interface LogInResponse {
+  identityToken: string;
+}
 
 export const LogIn = () => {
+  const { setToken, removeToken } = useAuthToken();
+  const navigate = useNavigate();
+
   const [errorMessage, setErrorMessage] = useState<string | undefined>(
     undefined
   );
+  const [email, setEmail] = useState<string | undefined>(undefined);
+  const [password, setPassword] = useState<string | undefined>(undefined);
 
-  const { setToken } = useAuthToken();
+  const callLogin = async () => {
+    const response = await api.post<LogInResponse>("/api/auth/login", {
+      email: email,
+      password: password,
+    });
+    return response.data;
+  };
+
+  const { isLoading: isLogInLoading, mutate: mutateLogIn } = useMutation<
+    LogInResponse,
+    AxiosError<any>
+  >(callLogin, {
+    onSuccess: (data) => {
+      setToken(data.identityToken);
+      setErrorMessage(undefined);
+      navigate("/my-recipes");
+    },
+    onError: (error) => {
+      removeToken();
+      if (isAxiosError(error)) {
+        setErrorMessage(error?.response?.data?.message);
+      } else {
+        console.log(error);
+      }
+    },
+  });
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    const payload = {
-      email: data.get("email"),
-      password: data.get("password"),
-    };
-
-    const response = await api
-      .post("/api/auth/login", payload)
-      .then((response) => {
-        console.log(response);
-        setToken(response.data.identityToken);
-        setErrorMessage(undefined);
-      })
-      .catch((err: Error | AxiosError) => {
-        if (isAxiosError(err)) {
-          setErrorMessage(err.response?.data.message);
-        } else {
-          console.log(err);
-        }
-      });
+    setEmail(data.get("email")?.toString());
+    setPassword(data.get("password")?.toString());
+    mutateLogIn();
   };
 
-  const renderError = () => {
+  const wrapCallStatus = (component: any) => (
+    <Box
+      sx={{
+        margin: "1rem",
+      }}
+    >
+      {component}
+    </Box>
+  );
+
+  const renderCallStatus = () => {
+    if (isLogInLoading) {
+      return wrapCallStatus(<CircularProgress />);
+    }
     if (errorMessage) {
-      return <Alert severity="error">{errorMessage}</Alert>;
+      return wrapCallStatus(<Alert severity="error">{errorMessage}</Alert>);
     }
     return null;
   };
@@ -65,7 +99,7 @@ export const LogIn = () => {
           margin: "2rem",
           padding: "3rem",
           boxShadow: "inset 0 0 8px #4b4a4a",
-          borderRadius: "10px"
+          borderRadius: "10px",
         }}
       >
         <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
@@ -74,7 +108,7 @@ export const LogIn = () => {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        {renderError()}
+        {renderCallStatus()}
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
           <TextField
             margin="normal"
@@ -101,7 +135,7 @@ export const LogIn = () => {
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
-            style={{color: 'white'}}
+            style={{ color: "white" }}
           >
             Sign In
           </Button>
