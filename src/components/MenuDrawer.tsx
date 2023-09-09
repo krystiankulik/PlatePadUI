@@ -25,20 +25,17 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { styled, useTheme } from "@mui/material/styles";
 import { ReactElement, useState } from "react";
-import { Route, Routes, useNavigate } from "react-router-dom";
-import { ConfirmEmail } from "./ConfirmEmail";
-import { LogIn } from "./LogIn";
-import { SignUp } from "./Signup";
-import { Recipes } from "./Recipes";
-import { Ingredient, Recipe } from "../model/model";
-import { api } from "../api";
-import { AxiosError, isAxiosError } from "axios";
-import useAuthToken from "../logic/useAuthToken";
-import { Ingredients } from "./Ingredients";
 import { isMobile } from "react-device-detect";
+import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
+import useAuthToken from "../logic/useAuthToken";
+import { ConfirmEmail } from "./ConfirmEmail";
 import IngredientDetail from "./IngredientDetail";
 import IngredientEdit from "./IngredientEdit";
+import { Ingredients } from "./Ingredients";
+import { LogIn } from "./LogIn";
 import RecipeDetail from "./RecipeDetail";
+import { Recipes } from "./Recipes";
+import { SignUp } from "./Signup";
 
 const drawerWidth = 240;
 
@@ -99,7 +96,7 @@ export function MenuDrawer(props: Props) {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
 
-  const { token } = useAuthToken();
+  const { isLoggedIn, removeToken } = useAuthToken();
 
   const openRecipes = () => {
     if (isMobile) {
@@ -156,13 +153,13 @@ export function MenuDrawer(props: Props) {
             edge="start"
             sx={{ mr: 2, ...(open && { display: "none" }) }}
           >
-            <MenuIcon sx={{ color: "white" }} />
+            <MenuIcon sx={{ color: "#303030" }} />
           </IconButton>
           <Typography
             variant="h6"
             noWrap
             component="div"
-            sx={{ color: "white" }}
+            sx={{ color: "#303030" }}
           >
             <b>PlatePad</b>
           </Typography>
@@ -230,9 +227,19 @@ export function MenuDrawer(props: Props) {
           {renderMenuItem("Sign Up", "/signup", () => (
             <AppRegistrationIcon />
           ))}
-          {renderMenuItem("Log Out Up", "/", () => (
-            <LogoutIcon />
-          ))}
+          <ListItem key={"logOut"} disablePadding>
+            <ListItemButton
+              onClick={() => {
+                removeToken();
+                navigate("/");
+              }}
+            >
+              <ListItemIcon>
+                <LogoutIcon />
+              </ListItemIcon>
+              <ListItemText primary={"Log Out"} />
+            </ListItemButton>
+          </ListItem>
           {renderMenuItem("Confirm Account", "/confirm-email", () => (
             <ConfirmationNumberIcon />
           ))}
@@ -249,6 +256,16 @@ export function MenuDrawer(props: Props) {
           }}
         >
           <Routes>
+            <Route
+              path="/"
+              element={
+                isLoggedIn ? (
+                  <Navigate to="/my-recipes" />
+                ) : (
+                  <Navigate to="/login" />
+                )
+              }
+            />
             <Route path="/login" element={<LogIn />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/confirm-email" element={<ConfirmEmail />} />

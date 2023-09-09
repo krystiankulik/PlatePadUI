@@ -8,14 +8,13 @@ import Grid from "@mui/material/Grid";
 import Link from "@mui/material/Link";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
+import { useMutation } from "@tanstack/react-query";
+import { AxiosError, isAxiosError } from "axios";
 import * as React from "react";
 import { useState } from "react";
-import { api } from "../api";
-import { AxiosError, isAxiosError } from "axios";
-import useAuthToken from "../logic/useAuthToken";
-import { useMutation } from "@tanstack/react-query";
-import { LoginRounded } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import { api } from "../api";
+import useAuthToken from "../logic/useAuthToken";
 
 interface LogInResponse {
   identityToken: string;
