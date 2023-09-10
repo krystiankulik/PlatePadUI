@@ -31,13 +31,13 @@ function App() {
     },
     palette: {
       background: {
-        default: "#303030",
+        default: "#3C4247",
       },
       primary: {
-        main: "#6ba776",
+        main: "#6ebd92",
       },
       secondary: {
-        main: "#568a60",
+        main: "#63997c",
       },
     },
   });

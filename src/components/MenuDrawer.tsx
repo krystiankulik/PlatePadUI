@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { MenuBook, ShoppingBasket } from "@mui/icons-material";
+import { Height, MenuBook, ShoppingBasket } from "@mui/icons-material";
 import AppRegistrationIcon from "@mui/icons-material/AppRegistration";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
@@ -24,6 +24,7 @@ import ListItemText from "@mui/material/ListItemText";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { styled, useTheme } from "@mui/material/styles";
+import { useQueryClient } from "@tanstack/react-query";
 import { ReactElement, useState } from "react";
 import { isMobile } from "react-device-detect";
 import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
@@ -36,7 +37,8 @@ import { LogIn } from "./LogIn";
 import RecipeDetail from "./RecipeDetail";
 import { Recipes } from "./Recipes";
 import { SignUp } from "./Signup";
-
+import { ReactComponent as PlatePadLogo } from "../assets/platePadLogo.svg";
+import { LandingPage } from "./LandingPage";
 const drawerWidth = 240;
 
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
@@ -97,6 +99,7 @@ export function MenuDrawer(props: Props) {
   const [open, setOpen] = useState(false);
 
   const { isLoggedIn, removeToken } = useAuthToken();
+  const queryClient = useQueryClient();
 
   const openRecipes = () => {
     if (isMobile) {
@@ -137,13 +140,38 @@ export function MenuDrawer(props: Props) {
     );
   };
 
+  const getMainPageNavigation = () => {
+    return isLoggedIn ? (
+      <Navigate to="/my-recipes" />
+    ) : (
+      <Navigate to="/welcome" />
+    );
+  };
+
+  const getRoutes = () => {
+    return (
+      <Routes>
+        <Route path="/" element={getMainPageNavigation()} />
+        <Route path="/welcome" element={<LandingPage />} />
+        <Route path="/login" element={<LogIn />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/confirm-email" element={<ConfirmEmail />} />
+        <Route path="/my-recipes" element={<Recipes />} />
+        <Route path="/my-ingredients" element={<Ingredients />} />
+        <Route path="/my-ingredients/:name" element={<IngredientDetail />} />
+        <Route path="/my-ingredients/:name/edit" element={<IngredientEdit />} />
+        <Route path="/my-recipes/:name" element={<RecipeDetail />} />
+      </Routes>
+    );
+  };
+
   return (
     <Box>
       <CssBaseline />
       <AppBar
         position="fixed"
         open={open}
-        style={{ boxShadow: "inset 0 -10px 10px -10px #888" }}
+        style={{ boxShadow: "inset 0 -10px 10px -10px #888", height: "4rem" }}
       >
         <Toolbar>
           <IconButton
@@ -161,7 +189,11 @@ export function MenuDrawer(props: Props) {
             component="div"
             sx={{ color: "#303030" }}
           >
-            <b>PlatePad</b>
+            <div
+              style={{ width: "6rem", marginTop: ".5rem", marginLeft: "1rem" }}
+            >
+              <PlatePadLogo />
+            </div>
           </Typography>
         </Toolbar>
       </AppBar>
@@ -231,6 +263,7 @@ export function MenuDrawer(props: Props) {
             <ListItemButton
               onClick={() => {
                 removeToken();
+                queryClient.removeQueries();
                 navigate("/");
               }}
             >
@@ -255,32 +288,7 @@ export function MenuDrawer(props: Props) {
             justifyContent: "center",
           }}
         >
-          <Routes>
-            <Route
-              path="/"
-              element={
-                isLoggedIn ? (
-                  <Navigate to="/my-recipes" />
-                ) : (
-                  <Navigate to="/login" />
-                )
-              }
-            />
-            <Route path="/login" element={<LogIn />} />
-            <Route path="/signup" element={<SignUp />} />
-            <Route path="/confirm-email" element={<ConfirmEmail />} />
-            <Route path="/my-recipes" element={<Recipes />} />
-            <Route path="/my-ingredients" element={<Ingredients />} />
-            <Route
-              path="/my-ingredients/:name"
-              element={<IngredientDetail />}
-            />
-            <Route
-              path="/my-ingredients/:name/edit"
-              element={<IngredientEdit />}
-            />
-            <Route path="/my-recipes/:name" element={<RecipeDetail />} />
-          </Routes>
+          {getRoutes()}
         </Box>
       </Main>
     </Box>
