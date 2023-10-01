@@ -7,17 +7,19 @@ import { LogIn } from "./components/LogIn";
 import { MenuDrawer } from "./components/MenuDrawer";
 import { SignUp } from "./components/Signup";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { useState } from "react";
+import { AuthContext } from "./context/AuthContext";
 
 const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        refetchOnWindowFocus: false,
-        refetchOnMount: false,
-        refetchOnReconnect: false,
-        retry: false
-      },
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+      retry: false,
     },
-  });
+  },
+});
 
 function App() {
   const theme = createTheme({
@@ -42,19 +44,27 @@ function App() {
     },
   });
 
+  const [token, setToken] = useState<string | null>(() => {
+    return window.localStorage.getItem("authToken");
+  });
+
+  const value = { token, setToken };
+
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider theme={theme}>
-        <BrowserRouter>
-          <MenuDrawer>
-            <LogIn />
-            <SignUp />
-            <ConfirmEmail />
-          </MenuDrawer>
-        </BrowserRouter>
-      </ThemeProvider>
-      <ReactQueryDevtools initialIsOpen={false} />
-    </QueryClientProvider>
+    <AuthContext.Provider value={value}>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider theme={theme}>
+          <BrowserRouter>
+            <MenuDrawer>
+              <LogIn />
+              <SignUp />
+              <ConfirmEmail />
+            </MenuDrawer>
+          </BrowserRouter>
+        </ThemeProvider>
+        <ReactQueryDevtools initialIsOpen={false} />
+      </QueryClientProvider>
+    </AuthContext.Provider>
   );
 }
 

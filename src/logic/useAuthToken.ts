@@ -1,25 +1,25 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
+import { AuthContext } from '../context/AuthContext';
 
 const useAuthToken = () => {
-    const [token, setTokenInternal] = useState<string | null>(() => {
-        return window.localStorage.getItem('authToken');
-    });
+
+    const context = useContext(AuthContext);
 
     const setToken = (newToken: string) => {
         window.localStorage.setItem('authToken', newToken);
-        setTokenInternal(newToken);
+        context.setToken(newToken);
     };
 
     const removeToken = () => {
         window.localStorage.removeItem('authToken');
-        setTokenInternal(null);
+        context.setToken(null);
     }
 
     return {
         setToken,
         removeToken,
-        token,
-        isLoggedIn: token !== null
+        token: context.token,
+        isLoggedIn: context.token !== null
     }
 };
 

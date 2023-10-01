@@ -44,7 +44,7 @@ const Image = styled("div")(({ theme }) => ({
   width: isMobile ? "100%" : "500px",
 }));
 
-const AuthButtonContainer = styled(Button)(({ theme }) => ({
+const AuthButtonContainer = styled("div")(({ theme }) => ({
   display: "flex",
   width: "100%",
   justifyContent: "space-evenly",

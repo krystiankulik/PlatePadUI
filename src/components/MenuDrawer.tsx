@@ -1,15 +1,12 @@
 import * as React from "react";
 
-import { Height, MenuBook, ShoppingBasket } from "@mui/icons-material";
+import { MenuBook, ShoppingBasket } from "@mui/icons-material";
 import AppRegistrationIcon from "@mui/icons-material/AppRegistration";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ConfirmationNumberIcon from "@mui/icons-material/ConfirmationNumber";
 import LoginIcon from "@mui/icons-material/Login";
-import LogoutIcon from "@mui/icons-material/Logout";
-import MailIcon from "@mui/icons-material/Mail";
 import MenuIcon from "@mui/icons-material/Menu";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -28,17 +25,17 @@ import { useQueryClient } from "@tanstack/react-query";
 import { ReactElement, useState } from "react";
 import { isMobile } from "react-device-detect";
 import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
+import { ReactComponent as PlatePadLogo } from "../assets/platePadLogo.svg";
 import useAuthToken from "../logic/useAuthToken";
 import { ConfirmEmail } from "./ConfirmEmail";
 import IngredientDetail from "./IngredientDetail";
 import IngredientEdit from "./IngredientEdit";
 import { Ingredients } from "./Ingredients";
+import { LandingPage } from "./LandingPage";
 import { LogIn } from "./LogIn";
 import RecipeDetail from "./RecipeDetail";
 import { Recipes } from "./Recipes";
 import { SignUp } from "./Signup";
-import { ReactComponent as PlatePadLogo } from "../assets/platePadLogo.svg";
-import { LandingPage } from "./LandingPage";
 const drawerWidth = 240;
 
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
@@ -125,21 +122,6 @@ export function MenuDrawer(props: Props) {
 
   const navigate = useNavigate();
 
-  const renderMenuItem = (
-    text: string,
-    link: string,
-    getIcon: () => ReactElement
-  ) => {
-    return (
-      <ListItem key={text} disablePadding>
-        <ListItemButton onClick={() => navigate(link)}>
-          <ListItemIcon>{getIcon()}</ListItemIcon>
-          <ListItemText primary={text} />
-        </ListItemButton>
-      </ListItem>
-    );
-  };
-
   const getMainPageNavigation = () => {
     return isLoggedIn ? (
       <Navigate to="/my-recipes" />
@@ -162,6 +144,94 @@ export function MenuDrawer(props: Props) {
         <Route path="/my-ingredients/:name/edit" element={<IngredientEdit />} />
         <Route path="/my-recipes/:name" element={<RecipeDetail />} />
       </Routes>
+    );
+  };
+
+  const renderMenuItem = (
+    text: string,
+    onClick: () => void,
+    getIcon: () => ReactElement
+  ) => {
+    return (
+      <ListItem key={text} disablePadding>
+        <ListItemButton onClick={onClick}>
+          <ListItemIcon>{getIcon()}</ListItemIcon>
+          <ListItemText primary={text} />
+        </ListItemButton>
+      </ListItem>
+    );
+  };
+
+  const myRecipesLink = () =>
+    renderMenuItem("My Recipes", openRecipes, () => <MenuBook />);
+
+  const myIngredientsLink = () =>
+    renderMenuItem("My Ingredients", openIngredients, () => <ShoppingBasket />);
+
+  const globalRecipesLink = () =>
+    renderMenuItem(
+      "PlatePad Recipes",
+      () => {},
+      () => <MenuBook />
+    );
+
+  const globalIngredientsLink = () =>
+    renderMenuItem(
+      "PlatePad Ingredients",
+      () => {},
+      () => <ShoppingBasket />
+    );
+
+  const logInLink = () =>
+    renderMenuItem(
+      "Log In",
+      () => navigate("/login"),
+      () => <LoginIcon />
+    );
+
+  const signUpLink = () =>
+    renderMenuItem(
+      "Sign Up",
+      () => navigate("/signup"),
+      () => <AppRegistrationIcon />
+    );
+
+  const logOutLink = () =>
+    renderMenuItem(
+      "Log Out",
+      () => {
+        removeToken();
+        queryClient.removeQueries();
+        navigate("/");
+      },
+      () => <ConfirmationNumberIcon />
+    );
+
+  const confirmAccountLink = () =>
+    renderMenuItem(
+      "Confirm Account",
+      () => navigate("/confirm-email"),
+      () => <ConfirmationNumberIcon />
+    );
+
+  const drawerFoldIcon = () => (
+    <IconButton onClick={handleDrawerClose}>
+      {theme.direction === "ltr" ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+    </IconButton>
+  );
+
+  const myDataLinks = () => {
+    if (!isLoggedIn) {
+      return null;
+    }
+    return (
+      <>
+        <Divider />
+        <List>
+          {myRecipesLink()}
+          {myIngredientsLink()}
+        </List>
+      </>
     );
   };
 
@@ -190,7 +260,7 @@ export function MenuDrawer(props: Props) {
             sx={{ color: "#303030" }}
           >
             <div
-              style={{ width: "6rem", marginTop: ".5rem", marginLeft: "1rem" }}
+              style={{ width: "4rem", marginTop: ".5rem", marginLeft: "1rem" }}
             >
               <PlatePadLogo />
             </div>
@@ -210,72 +280,19 @@ export function MenuDrawer(props: Props) {
         anchor="left"
         open={open}
       >
-        <DrawerHeader>
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === "ltr" ? (
-              <ChevronLeftIcon />
-            ) : (
-              <ChevronRightIcon />
-            )}
-          </IconButton>
-        </DrawerHeader>
+        <DrawerHeader>{drawerFoldIcon()}</DrawerHeader>
+        {myDataLinks()}
         <Divider />
         <List>
-          <ListItem key={"My Recipes"} disablePadding>
-            <ListItemButton onClick={openRecipes}>
-              <ListItemIcon>
-                <MenuBook />
-              </ListItemIcon>
-              <ListItemText primary={"My Recipes"} />
-            </ListItemButton>
-          </ListItem>
-          <ListItem key={"My Ingredients"} disablePadding>
-            <ListItemButton onClick={openIngredients}>
-              <ListItemIcon>
-                <ShoppingBasket />
-              </ListItemIcon>
-              <ListItemText primary={"My Ingredients"} />
-            </ListItemButton>
-          </ListItem>
+          {globalRecipesLink()}
+          {globalIngredientsLink()}
         </List>
         <Divider />
         <List>
-          {["PlatePad Recipes", "PlatePad Ingredients"].map((text, index) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-        <Divider />
-        <List>
-          {renderMenuItem("Log In", "/login", () => (
-            <LoginIcon />
-          ))}
-          {renderMenuItem("Sign Up", "/signup", () => (
-            <AppRegistrationIcon />
-          ))}
-          <ListItem key={"logOut"} disablePadding>
-            <ListItemButton
-              onClick={() => {
-                removeToken();
-                queryClient.removeQueries();
-                navigate("/");
-              }}
-            >
-              <ListItemIcon>
-                <LogoutIcon />
-              </ListItemIcon>
-              <ListItemText primary={"Log Out"} />
-            </ListItemButton>
-          </ListItem>
-          {renderMenuItem("Confirm Account", "/confirm-email", () => (
-            <ConfirmationNumberIcon />
-          ))}
+          {!isLoggedIn && logInLink()}
+          {!isLoggedIn && signUpLink()}
+          {isLoggedIn && logOutLink()}
+          {!isLoggedIn && confirmAccountLink()}
         </List>
       </Drawer>
       <Main open={open}>

@@ -12,7 +12,6 @@ export const Recipes: React.FC = () => {
   const { token } = useAuthToken();
   const navigate = useNavigate();
 
-  console.log("token", token);
   const fetchRecipes = () =>
     api
       .get("/api/recipes", {
