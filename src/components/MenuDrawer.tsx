@@ -36,6 +36,7 @@ import { LogIn } from "./LogIn";
 import RecipeDetail from "./RecipeDetail";
 import { Recipes } from "./Recipes";
 import { SignUp } from "./Signup";
+import IngredientCreate from "./IngredientCreate";
 const drawerWidth = 240;
 
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
@@ -142,6 +143,7 @@ export function MenuDrawer(props: Props) {
         <Route path="/my-ingredients" element={<Ingredients />} />
         <Route path="/my-ingredients/:name" element={<IngredientDetail />} />
         <Route path="/my-ingredients/:name/edit" element={<IngredientEdit />} />
+        <Route path="/my-ingredients/create" element={<IngredientCreate />} />
         <Route path="/my-recipes/:name" element={<RecipeDetail />} />
       </Routes>
     );
@@ -241,7 +243,7 @@ export function MenuDrawer(props: Props) {
       <AppBar
         position="fixed"
         open={open}
-        style={{ boxShadow: "inset 0 -10px 10px -10px #888", height: "4rem" }}
+        style={{ boxShadow: "inset 0 -10px 10px -10px #888", height: "3.5rem" }}
       >
         <Toolbar>
           <IconButton
@@ -260,7 +262,7 @@ export function MenuDrawer(props: Props) {
             sx={{ color: "#303030" }}
           >
             <div
-              style={{ width: "4rem", marginTop: ".5rem", marginLeft: "1rem" }}
+              style={{ width: "4.5rem", marginLeft: "1rem" }}
             >
               <PlatePadLogo />
             </div>
