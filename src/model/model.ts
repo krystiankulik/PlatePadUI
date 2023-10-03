@@ -15,9 +15,10 @@ export interface IngredientValue {
 }
 
 export interface Ingredient {
-    name: string;
-    displayName: string;
-    macro: Macro;
+  name: string;
+  displayName: string;
+  imageUrl?: string;
+  macro: Macro;
 }
 
 export interface Recipe {
@@ -25,5 +26,6 @@ export interface Recipe {
   displayName: string;
   macro: Macro;
   description: string;
+  imageUrl?: string;
   ingredientValues: IngredientValue[];
 }

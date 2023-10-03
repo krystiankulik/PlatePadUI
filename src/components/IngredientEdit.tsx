@@ -59,7 +59,6 @@ const IngredientEdit: React.FC = () => {
 
         // Optimistically update to the new value
         queryClient.setQueryData(["ingredient", name], newData);
-        // await queryClient.invalidateQueries(["ingredient"]);
 
         // Return a rollback function to revert to the old value if necessary
         return () =>

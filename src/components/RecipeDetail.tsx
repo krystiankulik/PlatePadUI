@@ -1,13 +1,27 @@
-import React, { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import {
+  Alert,
+  Box,
+  Button,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogTitle,
+  Grid,
+  List,
+  ListItem,
+  Typography,
+} from "@mui/material";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
-import { Box, CircularProgress, Alert, Typography, Grid, List, ListItem, Button, Dialog, DialogTitle, DialogActions } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
+import React, { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { api } from "../api";
 import useAuthToken from "../logic/useAuthToken";
 import { Recipe } from "../model/model";
 import { MacroValues } from "./MacroValues";
+import { RecipeImage } from "./imageUpload/RecipeImage";
 
 const RecipeDetail: React.FC = () => {
   const { name } = useParams();
@@ -22,10 +36,12 @@ const RecipeDetail: React.FC = () => {
       })
       .then((response) => response.data);
 
-  const { isLoading, isError, data, error } = useQuery<Recipe, AxiosError<any>>({
-    queryKey: ["recipe", name],
-    queryFn: fetchRecipe,
-  });
+  const { isLoading, isError, data, error } = useQuery<Recipe, AxiosError<any>>(
+    {
+      queryKey: ["recipe", name],
+      queryFn: fetchRecipe,
+    }
+  );
 
   const deleteMutation = useMutation<any, AxiosError<any>, string>(
     (name: string) =>
@@ -35,25 +51,27 @@ const RecipeDetail: React.FC = () => {
     {
       onSuccess: async () => {
         await queryClient.refetchQueries({ queryKey: ["my-recipes"] });
-        handleClose();
+        closeDeleteDialog();
         navigate("/my-recipes");
       },
     }
   );
 
-  const [open, setOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
-  const handleClickOpen = () => {
-    setOpen(true);
+  const openDeleteDialog = () => {
+    setDeleteDialogOpen(true);
   };
 
-  const handleClose = () => {
-    setOpen(false);
+  const closeDeleteDialog = () => {
+    setDeleteDialogOpen(false);
   };
 
   if (isLoading || deleteMutation.isLoading) return <CircularProgress />;
   if (isError || deleteMutation.isError) {
-    const message = isError ? error.response?.data.message : deleteMutation.error?.response?.data.message;
+    const message = isError
+      ? error.response?.data.message
+      : deleteMutation.error?.response?.data.message;
     return <Alert severity="error">{message}</Alert>;
   }
 
@@ -63,10 +81,14 @@ const RecipeDetail: React.FC = () => {
     }
   };
 
+  const handleEdit = () => {
+    navigate(`/my-recipes/${data.name}/edit`);
+  };
+
   const renderDialog = () => (
     <Dialog
-      open={open}
-      onClose={handleClose}
+      open={deleteDialogOpen}
+      onClose={closeDeleteDialog}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
     >
@@ -74,7 +96,7 @@ const RecipeDetail: React.FC = () => {
         {"Are you sure you want to delete the recipe?"}
       </DialogTitle>
       <DialogActions>
-        <Button onClick={handleClose}>Cancel</Button>
+        <Button onClick={closeDeleteDialog}>Cancel</Button>
         <Button onClick={handleDelete} color="secondary" autoFocus>
           Delete
         </Button>
@@ -95,7 +117,26 @@ const RecipeDetail: React.FC = () => {
       }}
     >
       <Button
-        onClick={handleClickOpen}
+        onClick={handleEdit}
+        sx={{
+          position: "absolute",
+          top: 8,
+          right: 32,
+          minWidth: 10,
+          padding: 0,
+        }}
+      >
+        <EditIcon
+          sx={{
+            width: 16,
+            height: 16,
+            color: "grey",
+            "&:hover": { color: "#5d71e2" },
+          }}
+        />
+      </Button>
+      <Button
+        onClick={openDeleteDialog}
         style={{
           position: "absolute",
           top: 8,
@@ -109,10 +150,11 @@ const RecipeDetail: React.FC = () => {
             width: 16,
             height: 16,
             color: "grey",
-            "&:hover": { color: 'red'}
+            "&:hover": { color: "red" },
           }}
         />
       </Button>
+      <RecipeImage width={'400px'} name={data?.name} imageUrl={data?.imageUrl ?? null} editable />
       <Typography variant="h4" style={{ marginBottom: "2rem" }}>
         {data?.displayName}
       </Typography>

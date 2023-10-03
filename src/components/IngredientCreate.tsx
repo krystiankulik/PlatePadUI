@@ -7,7 +7,7 @@ import useAuthToken from "../logic/useAuthToken";
 import { Ingredient } from "../model/model";
 import { Box, TextField, Button, CircularProgress, Alert } from "@mui/material";
 
-const IngredientCreate: React.FC = () => {
+export const IngredientCreate: React.FC = () => {
   const navigate = useNavigate();
   const { token } = useAuthToken();
   const queryClient = useQueryClient();
@@ -172,5 +172,3 @@ const IngredientCreate: React.FC = () => {
     </Box>
   );
 };
-
-export default IngredientCreate;

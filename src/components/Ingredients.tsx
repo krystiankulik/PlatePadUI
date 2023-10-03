@@ -1,9 +1,8 @@
-import AddIcon from "@mui/icons-material/Add";
+import SearchIcon from "@mui/icons-material/Search";
 import {
   Alert,
   Box,
   CircularProgress,
-  Fab,
   IconButton,
   Paper,
   Table,
@@ -23,7 +22,7 @@ import { useNavigate } from "react-router-dom";
 import { api } from "../api";
 import useAuthToken from "../logic/useAuthToken";
 import { Ingredient } from "../model/model";
-import SearchIcon from "@mui/icons-material/Search";
+import { AddingButton } from "./AddingButton";
 
 const IngredientsHeader = styled("div")(({ theme }) => ({
   display: "flex",
@@ -87,20 +86,6 @@ export const Ingredients: React.FC = () => {
     queryFn: () => fetchIngredients(searchTerm),
   });
 
-  const addIngredientButton = () => {
-    return (
-      <Fab
-        color="primary"
-        aria-label="add"
-        onClick={() => {
-          navigate("/my-ingredients/create");
-        }}
-      >
-        <AddIcon />
-      </Fab>
-    );
-  };
-
   const renderIngredientsData = () => (
     <TableContainer component={Paper}>
       <Table>
@@ -141,7 +126,11 @@ export const Ingredients: React.FC = () => {
   const renderContent = () => (
     <div style={{ width: "100%" }}>
       <IngredientsHeader>
-        {addIngredientButton()}
+        <AddingButton
+          onClick={() => {
+            navigate("/my-ingredients/create");
+          }}
+        />
         <SearchContainer>
           <TextField
             value={inputSearchTerm}

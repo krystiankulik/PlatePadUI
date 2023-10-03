@@ -13,12 +13,13 @@ import {
 } from "@mui/material";
 import { red } from "@mui/material/colors";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useNavigate, useParams } from "react-router-dom";
-import useAuthToken from "../logic/useAuthToken";
-import { Ingredient } from "../model/model";
-import { api } from "../api";
 import { AxiosError } from "axios";
 import { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { api } from "../api";
+import useAuthToken from "../logic/useAuthToken";
+import { Ingredient } from "../model/model";
+import { IngredientImage } from "./imageUpload/IngredientImage";
 
 const IngredientDetail: React.FC = () => {
   const { name } = useParams();
@@ -46,20 +47,20 @@ const IngredientDetail: React.FC = () => {
     {
       onSuccess: async () => {
         await queryClient.refetchQueries({ queryKey: ["my-ingredients"] });
-        handleClose();
+        closeDeleteDialog();
         navigate("/my-ingredients");
       },
     }
   );
 
-  const [open, setOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
-  const handleClickOpen = () => {
-    setOpen(true);
+  const openDeleteDialog = () => {
+    setDeleteDialogOpen(true);
   };
 
-  const handleClose = () => {
-    setOpen(false);
+  const closeDeleteDialog = () => {
+    setDeleteDialogOpen(false);
   };
 
   if (ingredientQuery.isLoading) return <CircularProgress />;
@@ -92,8 +93,8 @@ const IngredientDetail: React.FC = () => {
 
   const renderDialog = () => (
     <Dialog
-      open={open}
-      onClose={handleClose}
+      open={deleteDialogOpen}
+      onClose={closeDeleteDialog}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
     >
@@ -101,7 +102,7 @@ const IngredientDetail: React.FC = () => {
         {"Are you sure you want to delete the ingredient?"}
       </DialogTitle>
       <DialogActions>
-        <Button onClick={handleClose}>Cancel</Button>
+        <Button onClick={closeDeleteDialog}>Cancel</Button>
         <Button
           onClick={() => {
             if (name) {
@@ -149,7 +150,7 @@ const IngredientDetail: React.FC = () => {
         />
       </Button>
       <Button
-        onClick={handleClickOpen}
+        onClick={openDeleteDialog}
         sx={{
           position: "absolute",
           top: 8,
@@ -167,6 +168,12 @@ const IngredientDetail: React.FC = () => {
           }}
         />
       </Button>
+      <IngredientImage
+        width={"100%"}
+        name={ingredient.name}
+        imageUrl={ingredient?.imageUrl ?? null}
+        editable={true}
+      />
       <Typography variant="h5" align="center" marginBottom={"2rem"}>
         {ingredient.displayName}
       </Typography>

@@ -36,7 +36,9 @@ import { LogIn } from "./LogIn";
 import RecipeDetail from "./RecipeDetail";
 import { Recipes } from "./Recipes";
 import { SignUp } from "./Signup";
-import IngredientCreate from "./IngredientCreate";
+import { IngredientCreate } from "./IngredientCreate";
+import { RecipeCreate } from "./RecipeCreate";
+import RecipeEdit from "./RecipeEdit";
 const drawerWidth = 240;
 
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
@@ -139,12 +141,14 @@ export function MenuDrawer(props: Props) {
         <Route path="/login" element={<LogIn />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/confirm-email" element={<ConfirmEmail />} />
-        <Route path="/my-recipes" element={<Recipes />} />
         <Route path="/my-ingredients" element={<Ingredients />} />
         <Route path="/my-ingredients/:name" element={<IngredientDetail />} />
         <Route path="/my-ingredients/:name/edit" element={<IngredientEdit />} />
         <Route path="/my-ingredients/create" element={<IngredientCreate />} />
+        <Route path="/my-recipes" element={<Recipes />} />
         <Route path="/my-recipes/:name" element={<RecipeDetail />} />
+        <Route path="/my-recipes/:name/edit" element={<RecipeEdit />} />
+        <Route path="/my-recipes/create" element={<RecipeCreate />} />
       </Routes>
     );
   };
@@ -261,9 +265,7 @@ export function MenuDrawer(props: Props) {
             component="div"
             sx={{ color: "#303030" }}
           >
-            <div
-              style={{ width: "4.5rem", marginLeft: "1rem" }}
-            >
+            <div style={{ width: "4.5rem", marginLeft: "1rem" }}>
               <PlatePadLogo />
             </div>
           </Typography>
