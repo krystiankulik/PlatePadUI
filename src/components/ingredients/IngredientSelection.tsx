@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { Box, TextField, Autocomplete } from "@mui/material";
 import debounce from "lodash/debounce";
 import { useQuery } from "@tanstack/react-query";
-import { api } from "../api"; // Ensure this is your correct path for api calls
-import useAuthToken from "../logic/useAuthToken";
-import { Ingredient } from "../model/model";
+import { api } from "../../api"; // Ensure this is your correct path for api calls
+import useAuthToken from "../../logic/useAuthToken";
+import { Ingredient } from "../../model/model";
 
 interface IngredientSelectionProps {
   inputId: string;

@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
-import { api } from "../api";
-import useAuthToken from "../logic/useAuthToken";
-import { Ingredient } from "../model/model";
+import { api } from "../../api";
+import useAuthToken from "../../logic/useAuthToken";
+import { Ingredient } from "../../model/model";
 import { Box, TextField, Button, CircularProgress, Alert } from "@mui/material";
 
 export const IngredientCreate: React.FC = () => {

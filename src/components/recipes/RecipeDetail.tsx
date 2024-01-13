@@ -17,14 +17,17 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { api } from "../api";
-import useAuthToken from "../logic/useAuthToken";
-import { Recipe } from "../model/model";
-import { MacroValues } from "./MacroValues";
-import { RecipeImage } from "./imageUpload/RecipeImage";
+import { api } from "../../api";
+import useAuthToken from "../../logic/useAuthToken";
+import { Recipe } from "../../model/model";
+import { MacroValues } from "../MacroValues";
+import { RecipeImage } from "../imageUpload/RecipeImage";
 
+type RecipeDetailProps = {
+  global: boolean;
+};
 
-const RecipeDetail: React.FC = () => {
+const RecipeDetail: React.FC<RecipeDetailProps> = ({ global }) => {
   const { name } = useParams();
   const navigate = useNavigate();
   const { token } = useAuthToken();
@@ -105,18 +108,8 @@ const RecipeDetail: React.FC = () => {
     </Dialog>
   );
 
-  return (
-    <Box
-      style={{
-        width: "30rem",
-        backgroundColor: "white",
-        margin: "2rem",
-        padding: "3rem",
-        boxShadow: "inset 0 0 8px #4b4a4a",
-        borderRadius: "10px",
-        position: "relative",
-      }}
-    >
+  const renderEditButton = () =>
+    global ? null : (
       <Button
         onClick={handleEdit}
         sx={{
@@ -136,6 +129,10 @@ const RecipeDetail: React.FC = () => {
           }}
         />
       </Button>
+    );
+
+  const renderDeleteButton = () =>
+    global ? null : (
       <Button
         onClick={openDeleteDialog}
         style={{
@@ -155,7 +152,28 @@ const RecipeDetail: React.FC = () => {
           }}
         />
       </Button>
-      <RecipeImage width={'400px'} name={data?.name} imageUrl={data?.imageUrl ?? null} editable />
+    );
+
+  return (
+    <Box
+      style={{
+        width: "30rem",
+        backgroundColor: "white",
+        margin: "2rem",
+        padding: "3rem",
+        boxShadow: "inset 0 0 8px #4b4a4a",
+        borderRadius: "10px",
+        position: "relative",
+      }}
+    >
+      {renderEditButton()}
+      {renderDeleteButton()}
+      <RecipeImage
+        width={"400px"}
+        name={data?.name}
+        imageUrl={data?.imageUrl ?? null}
+        editable={!global}
+      />
       <Typography variant="h4" style={{ marginBottom: "2rem" }}>
         {data?.displayName}
       </Typography>

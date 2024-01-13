@@ -1,7 +1,6 @@
 import SearchIcon from "@mui/icons-material/Search";
 import {
   Alert,
-  Box,
   CircularProgress,
   IconButton,
   Paper,
@@ -12,22 +11,20 @@ import {
   TableHead,
   TableRow,
   TextField,
-  Typography,
-  styled,
+  styled
 } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { isAxiosError } from "axios";
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { api } from "../api";
-import useAuthToken from "../logic/useAuthToken";
-import { Ingredient } from "../model/model";
-import { AddingButton } from "./AddingButton";
+import { api } from "../../api";
+import { Ingredient } from "../../model/model";
+import { EmptyTablePlaceholder } from "./EmptyTablePlaceholder";
 
 const IngredientsHeader = styled("div")({
   display: "flex",
   justifyContent: "space-between",
   margin: "1rem",
+  flexDirection: "row-reverse",
 });
 
 const SearchContainer = styled("div")({
@@ -41,26 +38,8 @@ const LoadingContainer = styled("div")({
   justifyContent: "center",
 });
 
-const EmptyTablePlaceholder = () => (
-  <Box
-    display="flex"
-    justifyContent="center"
-    alignItems="center"
-    height="100px"
-  >
-    <Typography variant="h6" color="textSecondary">
-      {"No items found."}
-    </Typography>
-  </Box>
-);
 
-type IngredientsProps = {
-  global: boolean;
-};
-
-export const Ingredients: React.FC<IngredientsProps> = ({ global }) => {
-  const { token } = useAuthToken();
-  const navigate = useNavigate();
+export const GlobalIngredients: React.FC = () => {
   const [inputSearchTerm, setInputSearchTerm] = useState("");
   const [searchTerm, setSearchTerm] = useState<string | undefined>(undefined);
 
@@ -72,29 +51,20 @@ export const Ingredients: React.FC<IngredientsProps> = ({ global }) => {
     setSearchTerm(inputSearchTerm);
   };
 
-  const fetchIngredients = (
-    searchTerm: string | undefined,
-    global: boolean
-  ) => {
+  const fetchIngredients = (searchTerm: string | undefined) => {
     const params = new URLSearchParams();
     if (searchTerm) {
       params.append("search", searchTerm);
     }
 
-    if (global) {
-      params.append("global", "true");
-    }
-
     return api
-      .get(`/api/ingredients?${params.toString()}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+      .get(`/api/global-ingredients?${params.toString()}`)
       .then((response) => response.data);
   };
 
   const { isLoading, isError, data, error } = useQuery<Ingredient[], Error>({
-    queryKey: ["my-ingredients", searchTerm, global],
-    queryFn: () => fetchIngredients(searchTerm, global),
+    queryKey: ["global-ingredients", searchTerm],
+    queryFn: () => fetchIngredients(searchTerm),
   });
 
   const renderIngredientsData = () => (
@@ -115,12 +85,7 @@ export const Ingredients: React.FC<IngredientsProps> = ({ global }) => {
               <TableCell
                 component="th"
                 scope="row"
-                onClick={() => {
-                  if (!global) {
-                    navigate(`/my-ingredients/${ingredient.name}`);
-                  }
-                }}
-                style={{ cursor: global ? "default" : "pointer" }}
+                style={{ cursor: "default" }}
               >
                 {ingredient.displayName}
               </TableCell>
@@ -141,11 +106,6 @@ export const Ingredients: React.FC<IngredientsProps> = ({ global }) => {
   const renderContent = () => (
     <div style={{ width: "100%" }}>
       <IngredientsHeader>
-        <AddingButton
-          onClick={() => {
-            navigate("/my-ingredients/create");
-          }}
-        />
         <SearchContainer>
           <TextField
             value={inputSearchTerm}
@@ -167,11 +127,7 @@ export const Ingredients: React.FC<IngredientsProps> = ({ global }) => {
   );
 
   if (isError && isAxiosError(error)) {
-    if (!error.response) {
-      navigate("/login");
-    } else {
-      return <Alert severity="error">{error.response?.data.message}</Alert>;
-    }
+      return <Alert severity="error">{error.response?.data?.message ?? "Error occured during the fetch :("}</Alert>;
   }
 
   const renderLoading = () =>

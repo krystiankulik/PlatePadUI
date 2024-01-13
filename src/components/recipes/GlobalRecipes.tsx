@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import {
   Alert,
   Box,
@@ -6,21 +5,14 @@ import {
   Typography,
   styled,
 } from "@mui/material";
-import { Recipe } from "../model/model";
-import { MacroValues } from "./MacroValues";
-import { api } from "../api";
-import useAuthToken from "../logic/useAuthToken";
-import { AxiosError } from "axios";
 import { useQuery } from "@tanstack/react-query";
+import { AxiosError } from "axios";
+import React from "react";
 import { useNavigate } from "react-router-dom";
-import { AddingButton } from "./AddingButton";
-import { RecipeImage } from "./imageUpload/RecipeImage";
-
-const RecipessHeader = styled("div")(() => ({
-  display: "flex",
-  flexDirection: "row-reverse",
-  margin: "1rem",
-}));
+import { api } from "../../api";
+import { Recipe } from "../../model/model";
+import { MacroValues } from "../MacroValues";
+import { RecipeImage } from "../imageUpload/RecipeImage";
 
 const LoadingContainer = styled("div")(({ theme }) => ({
   display: "flex",
@@ -33,28 +25,25 @@ const NoRecipesTypography = styled(Typography)(({ theme }) => ({
   color: theme.palette.primary.main,
 }));
 
-export const Recipes: React.FC = () => {
-  const { token } = useAuthToken();
+export const GlobalRecipes: React.FC = () => {
   const navigate = useNavigate();
 
   const fetchRecipes = () =>
     api
-      .get("/api/recipes", {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+      .get("/api/global-recipes")
       .then((response) => response.data);
 
   const { isLoading, isError, data, error } = useQuery<
     Recipe[],
     AxiosError<any>
   >({
-    queryKey: ["my-recipes"],
+    queryKey: ["global-recipes"],
     queryFn: fetchRecipes,
   });
 
   const renderRecipes = () => {
     if(!data || data.length === 0) {
-      return <NoRecipesTypography variant="h5">You have no recipes yet...</NoRecipesTypography>
+      return <NoRecipesTypography variant="h5">No global recipes yet...</NoRecipesTypography>
     }
 
    return data.map((recipe) => (
@@ -79,7 +68,7 @@ export const Recipes: React.FC = () => {
       <Typography
         variant="h5"
         style={{ cursor: "pointer" }}
-        onClick={() => navigate(`/my-recipes/${recipe.name}`)}
+        onClick={() => navigate(`/global-recipes/${recipe.name}`)}
       >
         {recipe.displayName}
       </Typography>
@@ -111,25 +100,13 @@ export const Recipes: React.FC = () => {
 
   const renderContent = () => (
     <div style={{ width: "100%" }}>
-      <RecipessHeader>
-        <AddingButton
-          onClick={() => {
-            navigate("/my-recipes/create");
-          }}
-        />
-      </RecipessHeader>
       {renderLoading()}
       {data && renderRecipesData()}
-      
     </div>
   );
 
   if (isError) {
-    if (!error.response) {
-      navigate("/login");
-    } else {
-      return <Alert severity="error">{error.response?.data.message}</Alert>;
-    }
+      return <Alert severity="error">{error.response?.data?.message ?? "Error occured during the fetch :("}</Alert>;
   }
 
   const renderLoading = () =>

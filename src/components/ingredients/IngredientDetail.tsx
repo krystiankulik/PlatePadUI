@@ -16,10 +16,10 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { api } from "../api";
-import useAuthToken from "../logic/useAuthToken";
-import { Ingredient } from "../model/model";
-import { IngredientImage } from "./imageUpload/IngredientImage";
+import { api } from "../../api";
+import useAuthToken from "../../logic/useAuthToken";
+import { Ingredient } from "../../model/model";
+import { IngredientImage } from "../imageUpload/IngredientImage";
 
 const IngredientDetail: React.FC = () => {
   const { name } = useParams();

@@ -4,9 +4,9 @@ import { Alert, Box, Button, CircularProgress, TextField } from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import React, { useState } from "react";
-import { api } from "../api"; // Ensure this is your correct path for api calls
-import useAuthToken from "../logic/useAuthToken"; // Ensure this is your correct path for token handling
-import IngredientSelection from "./IngredientSelection";
+import { api } from "../../api"; // Ensure this is your correct path for api calls
+import useAuthToken from "../../logic/useAuthToken"; // Ensure this is your correct path for token handling
+import IngredientSelection from "../ingredients/IngredientSelection";
 import { useNavigate } from "react-router-dom";
 
 type IngredientValue = {

@@ -28,17 +28,19 @@ import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import { ReactComponent as PlatePadLogo } from "../assets/platePadLogo.svg";
 import useAuthToken from "../logic/useAuthToken";
 import { ConfirmEmail } from "./ConfirmEmail";
-import IngredientDetail from "./IngredientDetail";
-import IngredientEdit from "./IngredientEdit";
-import { Ingredients } from "./Ingredients";
+import IngredientDetail from "./ingredients/IngredientDetail";
+import IngredientEdit from "./ingredients/IngredientEdit";
+import { Ingredients } from "./ingredients/Ingredients";
 import { LandingPage } from "./LandingPage";
 import { LogIn } from "./LogIn";
-import RecipeDetail from "./RecipeDetail";
-import { Recipes } from "./Recipes";
+import RecipeDetail from "./recipes/RecipeDetail";
+import { Recipes } from "./recipes/Recipes";
 import { SignUp } from "./Signup";
-import { IngredientCreate } from "./IngredientCreate";
-import { RecipeCreate } from "./RecipeCreate";
-import RecipeEdit from "./RecipeEdit";
+import { IngredientCreate } from "./ingredients/IngredientCreate";
+import { RecipeCreate } from "./recipes/RecipeCreate";
+import RecipeEdit from "./recipes/RecipeEdit";
+import { GlobalIngredients } from "./ingredients/GlobalIngredients";
+import { GlobalRecipes } from "./recipes/GlobalRecipes";
 const drawerWidth = 240;
 
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
@@ -141,13 +143,15 @@ export function MenuDrawer(props: Props) {
         <Route path="/login" element={<LogIn />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/confirm-email" element={<ConfirmEmail />} />
-        <Route path="/global-ingredients" element={<Ingredients global={true}/>} />
-        <Route path="/my-ingredients" element={<Ingredients global={false}/>} />
+        <Route path="/global-ingredients" element={<GlobalIngredients />} />
+        <Route path="/my-ingredients" element={<Ingredients />} />
         <Route path="/my-ingredients/:name" element={<IngredientDetail />} />
         <Route path="/my-ingredients/:name/edit" element={<IngredientEdit />} />
         <Route path="/my-ingredients/create" element={<IngredientCreate />} />
+        <Route path="/global-recipes" element={<GlobalRecipes />} />
+        <Route path="/global-recipes/:name" element={<RecipeDetail global={true} />} />
         <Route path="/my-recipes" element={<Recipes />} />
-        <Route path="/my-recipes/:name" element={<RecipeDetail />} />
+        <Route path="/my-recipes/:name" element={<RecipeDetail global={false} />} />
         <Route path="/my-recipes/:name/edit" element={<RecipeEdit />} />
         <Route path="/my-recipes/create" element={<RecipeCreate />} />
       </Routes>
@@ -178,7 +182,7 @@ export function MenuDrawer(props: Props) {
   const globalRecipesLink = () =>
     renderMenuItem(
       "PlatePad Recipes",
-      () => {},
+      () => navigate("/global-recipes"),
       () => <MenuBook />
     );
 

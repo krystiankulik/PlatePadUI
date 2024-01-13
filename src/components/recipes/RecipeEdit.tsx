@@ -2,13 +2,13 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
-import { api } from "../api";
-import useAuthToken from "../logic/useAuthToken";
-import IngredientSelection from "./IngredientSelection";
+import { api } from "../../api";
+import useAuthToken from "../../logic/useAuthToken";
+import IngredientSelection from "../ingredients/IngredientSelection";
 import { Box, TextField, Button, CircularProgress, Alert } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
-import { Recipe } from "../model/model";
+import { Recipe } from "../../model/model";
 
 type IngredientValue = {
   amount: number;
