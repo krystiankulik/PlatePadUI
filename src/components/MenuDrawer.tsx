@@ -141,7 +141,8 @@ export function MenuDrawer(props: Props) {
         <Route path="/login" element={<LogIn />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/confirm-email" element={<ConfirmEmail />} />
-        <Route path="/my-ingredients" element={<Ingredients />} />
+        <Route path="/global-ingredients" element={<Ingredients global={true}/>} />
+        <Route path="/my-ingredients" element={<Ingredients global={false}/>} />
         <Route path="/my-ingredients/:name" element={<IngredientDetail />} />
         <Route path="/my-ingredients/:name/edit" element={<IngredientEdit />} />
         <Route path="/my-ingredients/create" element={<IngredientCreate />} />
@@ -184,7 +185,7 @@ export function MenuDrawer(props: Props) {
   const globalIngredientsLink = () =>
     renderMenuItem(
       "PlatePad Ingredients",
-      () => {},
+      () => navigate("/global-ingredients"),
       () => <ShoppingBasket />
     );
 
@@ -241,13 +242,17 @@ export function MenuDrawer(props: Props) {
     );
   };
 
+  const handleLogoCancel = () => {
+    navigate(`/`);
+  };
+
   return (
     <Box>
       <CssBaseline />
       <AppBar
         position="fixed"
         open={open}
-        style={{ boxShadow: "inset 0 -10px 10px -10px #888", height: "3.5rem" }}
+        style={{ boxShadow: "inset 0 -10px 10px -10px #888", height: "4rem" }}
       >
         <Toolbar>
           <IconButton
@@ -265,7 +270,7 @@ export function MenuDrawer(props: Props) {
             component="div"
             sx={{ color: "#303030" }}
           >
-            <div style={{ width: "4.5rem", marginLeft: "1rem" }}>
+            <div style={{ width: "6rem", marginLeft: "1rem", cursor: "pointer" }} onClick={handleLogoCancel}>
               <PlatePadLogo />
             </div>
           </Typography>

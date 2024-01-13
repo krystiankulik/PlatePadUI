@@ -23,6 +23,7 @@ import { Recipe } from "../model/model";
 import { MacroValues } from "./MacroValues";
 import { RecipeImage } from "./imageUpload/RecipeImage";
 
+
 const RecipeDetail: React.FC = () => {
   const { name } = useParams();
   const navigate = useNavigate();

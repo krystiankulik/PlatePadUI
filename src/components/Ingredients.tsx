@@ -24,22 +24,22 @@ import useAuthToken from "../logic/useAuthToken";
 import { Ingredient } from "../model/model";
 import { AddingButton } from "./AddingButton";
 
-const IngredientsHeader = styled("div")(({ theme }) => ({
+const IngredientsHeader = styled("div")({
   display: "flex",
   justifyContent: "space-between",
   margin: "1rem",
-}));
+});
 
-const SearchContainer = styled("div")(({ theme }) => ({
+const SearchContainer = styled("div")({
   display: "flex",
   alignItems: "center",
-}));
+});
 
-const LoadingContainer = styled("div")(({ theme }) => ({
+const LoadingContainer = styled("div")({
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-}));
+});
 
 const EmptyTablePlaceholder = () => (
   <Box
@@ -54,7 +54,11 @@ const EmptyTablePlaceholder = () => (
   </Box>
 );
 
-export const Ingredients: React.FC = () => {
+type IngredientsProps = {
+  global: boolean;
+};
+
+export const Ingredients: React.FC<IngredientsProps> = ({ global }) => {
   const { token } = useAuthToken();
   const navigate = useNavigate();
   const [inputSearchTerm, setInputSearchTerm] = useState("");
@@ -68,10 +72,17 @@ export const Ingredients: React.FC = () => {
     setSearchTerm(inputSearchTerm);
   };
 
-  const fetchIngredients = (searchTerm: string | undefined) => {
+  const fetchIngredients = (
+    searchTerm: string | undefined,
+    global: boolean
+  ) => {
     const params = new URLSearchParams();
     if (searchTerm) {
       params.append("search", searchTerm);
+    }
+
+    if (global) {
+      params.append("global", "true");
     }
 
     return api
@@ -82,8 +93,8 @@ export const Ingredients: React.FC = () => {
   };
 
   const { isLoading, isError, data, error } = useQuery<Ingredient[], Error>({
-    queryKey: ["my-ingredients", searchTerm],
-    queryFn: () => fetchIngredients(searchTerm),
+    queryKey: ["my-ingredients", searchTerm, global],
+    queryFn: () => fetchIngredients(searchTerm, global),
   });
 
   const renderIngredientsData = () => (
@@ -104,8 +115,12 @@ export const Ingredients: React.FC = () => {
               <TableCell
                 component="th"
                 scope="row"
-                onClick={() => navigate(`/my-ingredients/${ingredient.name}`)}
-                style={{ cursor: "pointer" }}
+                onClick={() => {
+                  if (!global) {
+                    navigate(`/my-ingredients/${ingredient.name}`);
+                  }
+                }}
+                style={{ cursor: global ? "default" : "pointer" }}
               >
                 {ingredient.displayName}
               </TableCell>
