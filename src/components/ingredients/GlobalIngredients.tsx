@@ -113,6 +113,7 @@ export const GlobalIngredients: React.FC = () => {
             variant="outlined"
             size="small"
             color="primary"
+            label="Search"
             style={{ backgroundColor: "white" }}
             placeholder="Search by display name"
           />

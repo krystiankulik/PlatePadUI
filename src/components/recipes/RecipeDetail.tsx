@@ -23,11 +23,7 @@ import { Recipe } from "../../model/model";
 import { MacroValues } from "../MacroValues";
 import { RecipeImage } from "../imageUpload/RecipeImage";
 
-type RecipeDetailProps = {
-  global: boolean;
-};
-
-const RecipeDetail: React.FC<RecipeDetailProps> = ({ global }) => {
+const RecipeDetail: React.FC = () => {
   const { name } = useParams();
   const navigate = useNavigate();
   const { token } = useAuthToken();
@@ -108,51 +104,49 @@ const RecipeDetail: React.FC<RecipeDetailProps> = ({ global }) => {
     </Dialog>
   );
 
-  const renderEditButton = () =>
-    global ? null : (
-      <Button
-        onClick={handleEdit}
+  const renderEditButton = () => (
+    <Button
+      onClick={handleEdit}
+      sx={{
+        position: "absolute",
+        top: 8,
+        right: 32,
+        minWidth: 10,
+        padding: 0,
+      }}
+    >
+      <EditIcon
         sx={{
-          position: "absolute",
-          top: 8,
-          right: 32,
-          minWidth: 10,
-          padding: 0,
+          width: 16,
+          height: 16,
+          color: "grey",
+          "&:hover": { color: "#5d71e2" },
         }}
-      >
-        <EditIcon
-          sx={{
-            width: 16,
-            height: 16,
-            color: "grey",
-            "&:hover": { color: "#5d71e2" },
-          }}
-        />
-      </Button>
-    );
+      />
+    </Button>
+  );
 
-  const renderDeleteButton = () =>
-    global ? null : (
-      <Button
-        onClick={openDeleteDialog}
-        style={{
-          position: "absolute",
-          top: 8,
-          right: 8,
-          minWidth: 10,
-          padding: 0,
+  const renderDeleteButton = () => (
+    <Button
+      onClick={openDeleteDialog}
+      style={{
+        position: "absolute",
+        top: 8,
+        right: 8,
+        minWidth: 10,
+        padding: 0,
+      }}
+    >
+      <DeleteIcon
+        sx={{
+          width: 16,
+          height: 16,
+          color: "grey",
+          "&:hover": { color: "red" },
         }}
-      >
-        <DeleteIcon
-          sx={{
-            width: 16,
-            height: 16,
-            color: "grey",
-            "&:hover": { color: "red" },
-          }}
-        />
-      </Button>
-    );
+      />
+    </Button>
+  );
 
   return (
     <Box
@@ -172,7 +166,7 @@ const RecipeDetail: React.FC<RecipeDetailProps> = ({ global }) => {
         width={"400px"}
         name={data?.name}
         imageUrl={data?.imageUrl ?? null}
-        editable={!global}
+        editable={true}
       />
       <Typography variant="h4" style={{ marginBottom: "2rem" }}>
         {data?.displayName}
@@ -187,7 +181,7 @@ const RecipeDetail: React.FC<RecipeDetailProps> = ({ global }) => {
           <List>
             {data?.ingredientValues.map((ingredientValue) => (
               <ListItem key={ingredientValue.ingredient.name}>
-                <b>{ingredientValue.ingredient.name}</b> :{" "}
+                <b>{ingredientValue.ingredient.displayName}</b> :{" "}
                 {ingredientValue.amount}g
               </ListItem>
             ))}

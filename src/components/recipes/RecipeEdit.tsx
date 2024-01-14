@@ -13,6 +13,7 @@ import { Recipe } from "../../model/model";
 type IngredientValue = {
   amount: number;
   ingredient: string;
+  ingredientDisplay: string;
 };
 
 type RecipeEditing = {
@@ -50,6 +51,7 @@ const RecipeEdit: React.FC = () => {
         ingredientValues: recipeQuery.data.ingredientValues.map(
           (ingredientValue) => ({
             ingredient: ingredientValue?.ingredient?.name ?? "",
+            ingredientDisplay: ingredientValue?.ingredient?.displayName ?? "",
             amount: ingredientValue?.amount ?? 0,
           })
         ),
@@ -63,7 +65,7 @@ const RecipeEdit: React.FC = () => {
         headers: { Authorization: `Bearer ${token}` },
       }),
     {
-      onMutate: async (newData) => {
+      onMutate: async (_newData) => {
         await queryClient.cancelQueries(["recipe", name]);
       },
       onSuccess: () => {
@@ -117,6 +119,8 @@ const RecipeEdit: React.FC = () => {
         label="Description"
         value={recipeData.description}
         margin="normal"
+        multiline
+        rows={10}
         onChange={(e) =>
           setRecipeData({ ...recipeData, description: e.target.value })
         }
@@ -143,7 +147,7 @@ const RecipeEdit: React.FC = () => {
             ...recipeData,
             ingredientValues: [
               ...recipeData.ingredientValues,
-              { amount: 0, ingredient: "" },
+              { amount: 0, ingredient: "", ingredientDisplay: ""},
             ],
           })
         }

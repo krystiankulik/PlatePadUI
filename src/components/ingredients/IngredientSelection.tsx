@@ -1,15 +1,23 @@
-import React, { useState } from "react";
-import { Box, TextField, Autocomplete } from "@mui/material";
-import debounce from "lodash/debounce";
+import { Autocomplete, Box, TextField } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
+import debounce from "lodash/debounce";
+import React, { useEffect, useState } from "react";
 import { api } from "../../api"; // Ensure this is your correct path for api calls
 import useAuthToken from "../../logic/useAuthToken";
 import { Ingredient } from "../../model/model";
 
 interface IngredientSelectionProps {
   inputId: string;
-  ingredientValue: { amount: number; ingredient: string };
-  onChange: (newValue: { amount: number; ingredient: string }) => void;
+  ingredientValue: {
+    amount: number;
+    ingredient: string;
+    ingredientDisplay: string;
+  };
+  onChange: (newValue: {
+    amount: number;
+    ingredient: string;
+    ingredientDisplay: string;
+  }) => void;
 }
 
 const IngredientSelection: React.FC<IngredientSelectionProps> = ({
@@ -20,35 +28,45 @@ const IngredientSelection: React.FC<IngredientSelectionProps> = ({
   const { token } = useAuthToken();
   const [searchTerm, setSearchTerm] = useState("");
 
-  const searchIngredients = debounce((searchValue: string) => {
+
+  const debouncedSearch = debounce(async (searchValue: string) => {
     setSearchTerm(searchValue);
   }, 300);
 
-  const { data: searchResults = [] } = useQuery<Ingredient[], Error>(
+  const { isLoading, data, fetchStatus } = useQuery<Ingredient[], Error>(
     ["searchIngredients", inputId, searchTerm],
-    () =>
-      api
-        .get(`/api/ingredients?search=${searchTerm}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        })
-        .then((res) => res.data),
+    async () => {
+      const response = await api.get(`/api/ingredients?search=${searchTerm}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return response.data;
+    },
     {
       enabled: !!searchTerm,
-      retry: 3,
+      retry: 1,
     }
   );
+
+
+  useEffect(() => {
+    return () => debouncedSearch.cancel();
+  }, [debouncedSearch]);
+
+  const loadingData = isLoading && fetchStatus === "fetching";
+
 
   return (
     <Box display="flex" justifyContent="space-between" alignItems="center">
       <Autocomplete
-        options={searchResults?.map((it) => it.name) ?? []}
+        options={data?.map((it) => it.name) ?? []}
         getOptionLabel={(option) => option}
         value={ingredientValue.ingredient}
-        onInputChange={(_, newValue) => searchIngredients(newValue)}
+        onInputChange={(_, newValue) => debouncedSearch(newValue)}
         onChange={(_, newValue) =>
           newValue && onChange({ ...ingredientValue, ingredient: newValue })
         }
-        renderInput={(params) => <TextField {...params} label="Ingredient" />}
+        loading={loadingData}
+        renderInput={(params) => <TextField {...params} label="Ingredient" style={{width: "200px"}}/>}
       />
       <TextField
         label="Amount (g)"

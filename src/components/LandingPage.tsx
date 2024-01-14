@@ -1,7 +1,7 @@
-import { Button, styled, useTheme } from "@mui/material";
-import landingPageImage from "../assets/PlatePad_landingPicture.png";
+import { Button, styled } from "@mui/material";
 import { isMobile } from "react-device-detect";
 import { useNavigate } from "react-router-dom";
+import landingPageImage from "../assets/PlatePad_landingPicture.png";
 
 const Info = styled("div")(({ theme }) => ({
   display: "flex",
@@ -24,34 +24,34 @@ const Info = styled("div")(({ theme }) => ({
   },
 }));
 
-const Container = styled("div")(({ theme }) => ({
+const Container = styled("div")({
   display: "flex",
   flexDirection: "row-reverse",
   flexWrap: "wrap",
   alightItems: "center",
   justifyContent: "center",
-}));
+});
 
-const BulletIcon = styled("span")(({ theme }) => ({
+const BulletIcon = styled("span")({
   fontSize: "1.8rem",
-}));
+});
 
-const Description = styled("div")(({ theme }) => ({
+const Description = styled("div")({
   width: isMobile ? "100%" : "40%",
-}));
+});
 
-const Image = styled("div")(({ theme }) => ({
+const Image = styled("div")({
   width: isMobile ? "100%" : "500px",
-}));
+});
 
-const AuthButtonContainer = styled("div")(({ theme }) => ({
+const AuthButtonContainer = styled("div")({
   display: "flex",
   width: "100%",
-  justifyContent: "space-evenly",
+  justifyContent: "center",
   "& > *": {
     margin: "1rem",
   },
-}));
+});
 
 const AuthButton = styled(Button)(({ theme }) => ({
   backgroundColor: theme.palette.secondary.main,
@@ -60,6 +60,15 @@ const AuthButton = styled(Button)(({ theme }) => ({
     color: theme.palette.secondary.main,
   },
 }));
+
+const ExploreButtonContainer = styled("div")({
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  marginTop: "1rem",
+  marginBottom: "2rem"
+});
+
 
 export const LandingPage = () => {
   const navigate = useNavigate();
@@ -95,6 +104,16 @@ export const LandingPage = () => {
               }
             </li>
           </ul>
+          <ExploreButtonContainer>
+          <Button
+              variant="outlined"
+              onClick={() => {
+                navigate("/global-recipes");
+              }}
+            >
+              {"Explore example recipes!"}
+            </Button>
+            </ExploreButtonContainer>
           <AuthButtonContainer>
             <AuthButton
               onClick={() => {

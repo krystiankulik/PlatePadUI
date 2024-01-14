@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 type IngredientValue = {
   amount: number;
   ingredient: string;
+  ingredientDisplay: string;
 };
 
 type RecipeCreation = {
@@ -32,7 +33,7 @@ export const RecipeCreate: React.FC = () => {
     name: "",
     displayName: "",
     description: "",
-    ingredientValues: [{ amount: 0, ingredient: "" }],
+    ingredientValues: [{ amount: 0, ingredient: "", ingredientDisplay: "" }],
   });
 
   const createRecipeMutation = useMutation<
@@ -124,6 +125,8 @@ export const RecipeCreate: React.FC = () => {
         label="Description"
         value={recipeData.description}
         margin="normal"
+        multiline
+        rows={10}
         onChange={(e) =>
           setRecipeData({ ...recipeData, description: e.target.value })
         }
@@ -152,7 +155,7 @@ export const RecipeCreate: React.FC = () => {
             ...recipeData,
             ingredientValues: [
               ...recipeData.ingredientValues,
-              { amount: 0, ingredient: "" },
+              { amount: 0, ingredient: "", ingredientDisplay: "" },
             ],
           })
         }
