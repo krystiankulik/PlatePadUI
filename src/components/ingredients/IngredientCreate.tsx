@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import { Alert, Box, Button, CircularProgress, TextField } from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../api";
 import useAuthToken from "../../logic/useAuthToken";
 import { Ingredient } from "../../model/model";
-import { Box, TextField, Button, CircularProgress, Alert } from "@mui/material";
 
 export const IngredientCreate: React.FC = () => {
   const navigate = useNavigate();
@@ -13,6 +13,7 @@ export const IngredientCreate: React.FC = () => {
   const queryClient = useQueryClient();
 
   const [submitAttempted, setSubmitAttempted] = useState(false);
+  const [nameContainsSpaces, setNameContainsSpaces] = useState(false);
 
   const [ingredientData, setIngredientData] = useState<Ingredient>({
     name: "",
@@ -54,6 +55,10 @@ export const IngredientCreate: React.FC = () => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
 
+    if (name === "name") {
+      setNameContainsSpaces(/\s/.test(value)); // Check for spaces in the name
+    }
+
     setIngredientData((prevData) => {
       if (name === "name" || name === "displayName") {
         return {
@@ -80,6 +85,12 @@ export const IngredientCreate: React.FC = () => {
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
+
+    if (nameContainsSpaces) {
+      setSubmitAttempted(true);
+      return;
+    }
+
     createIngredientMutation.mutate(ingredientData);
   };
 
@@ -114,8 +125,14 @@ export const IngredientCreate: React.FC = () => {
         onChange={handleChange}
         margin="normal"
         required
-        error={nameValidationFailed}
-        helperText={nameValidationFailed ? "Name is required" : ""}
+        error={nameValidationFailed || nameContainsSpaces}
+        helperText={
+          nameValidationFailed
+            ? "Name is required"
+            : nameContainsSpaces
+            ? "Name should not contain spaces"
+            : ""
+        }
       />
       <TextField
         label="Display Name"

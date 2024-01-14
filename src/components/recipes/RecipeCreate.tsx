@@ -27,12 +27,13 @@ export const RecipeCreate: React.FC = () => {
   const navigate = useNavigate();
 
   const [submitAttempted, setSubmitAttempted] = useState(false);
+  const [nameContainsSpaces, setNameContainsSpaces] = useState(false);
 
   const [recipeData, setRecipeData] = useState<RecipeCreation>({
     name: "",
     displayName: "",
     description: "",
-    ingredientValues: [{ amount: 0, ingredient: ""}],
+    ingredientValues: [{ amount: 0, ingredient: "" }],
   });
 
   const createRecipeMutation = useMutation<
@@ -55,6 +56,10 @@ export const RecipeCreate: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (nameContainsSpaces) {
+      setSubmitAttempted(true);
+      return;
+    }
     const validIngredientValues = recipeData.ingredientValues.filter(
       (ing) => ing.amount !== 0 && ing.ingredient.length > 0
     );
@@ -102,10 +107,19 @@ export const RecipeCreate: React.FC = () => {
         label="Name"
         value={recipeData.name}
         margin="normal"
-        onChange={(e) => setRecipeData({ ...recipeData, name: e.target.value })}
+        onChange={(e) => {
+          setRecipeData({ ...recipeData, name: e.target.value });
+          setNameContainsSpaces(/\s/.test(e.target.value)); // Check for spaces
+        }}
         required
-        error={nameValidationFailed}
-        helperText={nameValidationFailed ? "Name is required" : ""}
+        error={nameValidationFailed || nameContainsSpaces}
+        helperText={
+          nameValidationFailed
+            ? "Name is required"
+            : nameContainsSpaces
+            ? "Name should not contain spaces"
+            : ""
+        }
       />
       <TextField
         label="Display Name"
@@ -154,7 +168,7 @@ export const RecipeCreate: React.FC = () => {
             ...recipeData,
             ingredientValues: [
               ...recipeData.ingredientValues,
-              { amount: 0, ingredient: ""},
+              { amount: 0, ingredient: "" },
             ],
           })
         }

@@ -82,7 +82,7 @@ const IngredientSelection: React.FC<IngredientSelectionProps> = ({
           <TextField
             {...params}
             label="Ingredient"
-            style={{ width: "200px" }}
+            style={{ width: "200px", marginTop: "8px" }}
           />
         )}
       />

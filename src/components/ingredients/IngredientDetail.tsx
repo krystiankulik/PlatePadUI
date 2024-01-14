@@ -19,8 +19,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import { api } from "../../api";
 import useAuthToken from "../../logic/useAuthToken";
 import { Ingredient } from "../../model/model";
-import { IngredientImage } from "../imageUpload/IngredientImage";
-
 const IngredientDetail: React.FC = () => {
   const { name } = useParams();
   const { token } = useAuthToken();
@@ -168,12 +166,6 @@ const IngredientDetail: React.FC = () => {
           }}
         />
       </Button>
-      <IngredientImage
-        width={"100%"}
-        name={ingredient.name}
-        imageUrl={ingredient?.imageUrl ?? null}
-        editable={true}
-      />
       <Typography variant="h5" align="center" marginBottom={"2rem"}>
         {ingredient.displayName}
       </Typography>

@@ -1,14 +1,14 @@
 import React from "react";
 import { ProductImage } from "./ProductImage";
 
-interface IngredientImage {
+interface IngredientImageProps {
   width: string | null;
   imageUrl: string | null;
   name: string;
   editable: boolean;
 }
 
-export const IngredientImage: React.FC<IngredientImage> = ({
+export const IngredientImage: React.FC<IngredientImageProps> = ({
   width,
   imageUrl,
   name,

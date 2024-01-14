@@ -56,10 +56,10 @@ export const ProductImage: React.FC<ProductImageProps> = ({
       onSuccess: () => {
         if (type === "ingredient") {
           queryClient.refetchQueries(["ingredient", name]);
-          queryClient.refetchQueries(["ingredients"]);
+          queryClient.refetchQueries(["my-ingredients"]);
         } else if (type === "recipe") {
           queryClient.refetchQueries(["recipe", name]);
-          queryClient.refetchQueries(["recipes"]);
+          queryClient.refetchQueries(["my-recipes"]);
         }
       },
     }
