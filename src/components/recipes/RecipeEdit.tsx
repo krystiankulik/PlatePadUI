@@ -13,7 +13,6 @@ import { Recipe } from "../../model/model";
 type IngredientValue = {
   amount: number;
   ingredient: string;
-  ingredientDisplay: string;
 };
 
 type RecipeEditing = {
@@ -51,7 +50,6 @@ const RecipeEdit: React.FC = () => {
         ingredientValues: recipeQuery.data.ingredientValues.map(
           (ingredientValue) => ({
             ingredient: ingredientValue?.ingredient?.name ?? "",
-            ingredientDisplay: ingredientValue?.ingredient?.displayName ?? "",
             amount: ingredientValue?.amount ?? 0,
           })
         ),
@@ -147,7 +145,7 @@ const RecipeEdit: React.FC = () => {
             ...recipeData,
             ingredientValues: [
               ...recipeData.ingredientValues,
-              { amount: 0, ingredient: "", ingredientDisplay: ""},
+              { amount: 0, ingredient: ""},
             ],
           })
         }

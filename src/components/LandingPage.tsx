@@ -48,14 +48,12 @@ const AuthButtonContainer = styled("div")({
   display: "flex",
   width: "100%",
   justifyContent: "center",
-  "& > *": {
-    margin: "1rem",
-  },
 });
 
 const AuthButton = styled(Button)(({ theme }) => ({
   backgroundColor: theme.palette.secondary.main,
   color: theme.palette.background.default,
+  margin: "1rem",
   "&:hover": {
     color: theme.palette.secondary.main,
   },

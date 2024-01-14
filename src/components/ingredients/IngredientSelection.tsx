@@ -11,12 +11,10 @@ interface IngredientSelectionProps {
   ingredientValue: {
     amount: number;
     ingredient: string;
-    ingredientDisplay: string;
   };
   onChange: (newValue: {
     amount: number;
     ingredient: string;
-    ingredientDisplay: string;
   }) => void;
 }
 
@@ -28,7 +26,6 @@ const IngredientSelection: React.FC<IngredientSelectionProps> = ({
   const { token } = useAuthToken();
   const [searchTerm, setSearchTerm] = useState("");
 
-
   const debouncedSearch = debounce(async (searchValue: string) => {
     setSearchTerm(searchValue);
   }, 300);
@@ -36,10 +33,27 @@ const IngredientSelection: React.FC<IngredientSelectionProps> = ({
   const { isLoading, data, fetchStatus } = useQuery<Ingredient[], Error>(
     ["searchIngredients", inputId, searchTerm],
     async () => {
-      const response = await api.get(`/api/ingredients?search=${searchTerm}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      return response.data;
+      if (!searchTerm) {
+        return [];
+      }
+
+      const ingredientsPromise = api.get(
+        `/api/ingredients?search=${searchTerm}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      const globalIngredientsPromise = api.get(
+        `/api/global-ingredients?search=${searchTerm}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      const [ingredientsResponse, globalIngredientsResponse] =
+        await Promise.all([ingredientsPromise, globalIngredientsPromise]);
+
+      return [...ingredientsResponse.data, ...globalIngredientsResponse.data];
     },
     {
       enabled: !!searchTerm,
@@ -47,13 +61,11 @@ const IngredientSelection: React.FC<IngredientSelectionProps> = ({
     }
   );
 
-
   useEffect(() => {
     return () => debouncedSearch.cancel();
   }, [debouncedSearch]);
 
   const loadingData = isLoading && fetchStatus === "fetching";
-
 
   return (
     <Box display="flex" justifyContent="space-between" alignItems="center">
@@ -66,7 +78,13 @@ const IngredientSelection: React.FC<IngredientSelectionProps> = ({
           newValue && onChange({ ...ingredientValue, ingredient: newValue })
         }
         loading={loadingData}
-        renderInput={(params) => <TextField {...params} label="Ingredient" style={{width: "200px"}}/>}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            label="Ingredient"
+            style={{ width: "200px" }}
+          />
+        )}
       />
       <TextField
         label="Amount (g)"
