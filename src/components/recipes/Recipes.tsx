@@ -28,9 +28,23 @@ const LoadingContainer = styled("div")(({ theme }) => ({
   justifyContent: "center",
 }));
 
-
 const NoRecipesTypography = styled(Typography)(({ theme }) => ({
   color: theme.palette.primary.main,
+}));
+
+const Container = styled(Box)(({ theme }) => ({
+  width: "20rem",
+  backgroundColor: "white",
+  margin: "2rem",
+  padding: "3rem",
+  boxShadow: "inset 0 0 8px #4b4a4a",
+  borderRadius: "10px",
+  height: "30rem",
+  [theme.breakpoints.down("sm")]: {
+    width: "90%",
+    padding: "30px",
+    margin: "10px",
+  },
 }));
 
 export const Recipes: React.FC = () => {
@@ -53,47 +67,40 @@ export const Recipes: React.FC = () => {
   });
 
   const renderRecipes = () => {
-    if(!data || data.length === 0) {
-      return <NoRecipesTypography variant="h5">You have no recipes yet...</NoRecipesTypography>
+    if (!data || data.length === 0) {
+      return (
+        <NoRecipesTypography variant="h5">
+          You have no recipes yet...
+        </NoRecipesTypography>
+      );
     }
 
-   return data.map((recipe) => (
-    <Box
-      sx={{
-        width: "20rem",
-        backgroundColor: "white",
-        margin: "2rem",
-        padding: "3rem",
-        boxShadow: "inset 0 0 8px #4b4a4a",
-        borderRadius: "10px",
-        height: "30rem",
-      }}
-      key={recipe.name}
-    >
-      <RecipeImage
-        width={"100%"}
-        name={recipe.name}
-        imageUrl={recipe?.imageUrl ?? null}
-        editable={false}
-      />
-      <Typography
-        variant="h5"
-        style={{ cursor: "pointer" }}
-        onClick={() => navigate(`/my-recipes/${recipe.name}`)}
-      >
-        {recipe.displayName}
-      </Typography>
-      <Box style={{ paddingTop: "2rem" }}>
-        <MacroValues
-          calories={recipe.macro.calories}
-          fats={recipe.macro.fats}
-          proteins={recipe.macro.proteins}
-          carbs={recipe.macro.carbohydrates}
+    return data.map((recipe) => (
+      <Container key={recipe.name}>
+        <RecipeImage
+          width={"100%"}
+          name={recipe.name}
+          imageUrl={recipe?.imageUrl ?? null}
+          editable={false}
         />
-      </Box>
-    </Box>
-  ));
-    }
+        <Typography
+          variant="h5"
+          style={{ cursor: "pointer" }}
+          onClick={() => navigate(`/my-recipes/${recipe.name}`)}
+        >
+          {recipe.displayName}
+        </Typography>
+        <Box style={{ paddingTop: "2rem" }}>
+          <MacroValues
+            calories={recipe.macro.calories}
+            fats={recipe.macro.fats}
+            proteins={recipe.macro.proteins}
+            carbs={recipe.macro.carbohydrates}
+          />
+        </Box>
+      </Container>
+    ));
+  };
 
   const renderRecipesData = () => (
     <Box
@@ -120,7 +127,6 @@ export const Recipes: React.FC = () => {
       </RecipessHeader>
       {renderLoading()}
       {data && renderRecipesData()}
-      
     </div>
   );
 

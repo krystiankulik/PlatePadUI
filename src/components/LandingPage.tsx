@@ -1,7 +1,7 @@
 import { Button, styled } from "@mui/material";
-import { isMobile } from "react-device-detect";
 import { useNavigate } from "react-router-dom";
 import landingPageImage from "../assets/PlatePad_landingPicture.png";
+import { isMobile } from "react-device-detect";
 
 const Info = styled("div")(({ theme }) => ({
   display: "flex",
@@ -29,20 +29,26 @@ const Container = styled("div")({
   flexDirection: "row-reverse",
   flexWrap: "wrap",
   alightItems: "center",
-  justifyContent: "center",
+  justifyContent: "center"
 });
 
 const BulletIcon = styled("span")({
   fontSize: "1.8rem",
 });
 
-const Description = styled("div")({
-  width: isMobile ? "100%" : "40%",
-});
+const Description = styled("div")(({ theme }) => ({
+  width: "40%",
+  [theme.breakpoints.down("sm")]: {
+    width: "95%",
+  },
+}));
 
-const Image = styled("div")({
-  width: isMobile ? "100%" : "500px",
-});
+const Image = styled("div")(({ theme }) => ({
+  width: "500px",
+  [theme.breakpoints.down("sm")]: {
+    width: "300px",
+  },
+}));
 
 const AuthButtonContainer = styled("div")({
   display: "flex",
@@ -67,19 +73,29 @@ const ExploreButtonContainer = styled("div")({
   marginBottom: "2rem"
 });
 
+const Img = styled("img")(({ theme }) => ({
+  width: "500px",
+  [theme.breakpoints.down("sm")]: {
+    width: "300px",
+  },
+}));
 
 export const LandingPage = () => {
   const navigate = useNavigate();
 
+  const renderHeader = () => {
+    const text = "🌟Welcome to PlatePad🌟";
+    return isMobile ? <h3>{text}</h3> : <h2>{text}</h2>
+  }
+
   return (
     <Info>
-      <h2>🌟Welcome to PlatePad🌟</h2>
+      {renderHeader()}
       <Container>
         <Image>
-          <img
+          <Img
             src={landingPageImage}
             alt="landing page"
-            style={{ width: isMobile ? "80%" : "500px" }}
           />
         </Image>
         <Description>

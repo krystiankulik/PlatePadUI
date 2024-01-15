@@ -25,6 +25,22 @@ const NoRecipesTypography = styled(Typography)(({ theme }) => ({
   color: theme.palette.primary.main,
 }));
 
+
+const Container = styled(Box)(({ theme }) => ({
+  width: "20rem",
+  backgroundColor: "white",
+  margin: "2rem",
+  padding: "3rem",
+  boxShadow: "inset 0 0 8px #4b4a4a",
+  borderRadius: "10px",
+  height: "30rem",
+  [theme.breakpoints.down("sm")]: {
+    width: "90%",
+    padding: "30px",
+    margin: "10px",
+  },
+}));
+
 export const GlobalRecipes: React.FC = () => {
   const navigate = useNavigate();
 
@@ -47,16 +63,7 @@ export const GlobalRecipes: React.FC = () => {
     }
 
    return data.map((recipe) => (
-    <Box
-      sx={{
-        width: "20rem",
-        backgroundColor: "white",
-        margin: "2rem",
-        padding: "3rem",
-        boxShadow: "inset 0 0 8px #4b4a4a",
-        borderRadius: "10px",
-        height: "30rem",
-      }}
+    <Container
       key={recipe.name}
     >
       <RecipeImage
@@ -80,7 +87,7 @@ export const GlobalRecipes: React.FC = () => {
           carbs={recipe.macro.carbohydrates}
         />
       </Box>
-    </Box>
+    </Container>
   ));
     }
 

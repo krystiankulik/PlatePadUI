@@ -5,7 +5,8 @@ import {
   Grid,
   List,
   ListItem,
-  Typography
+  Typography,
+  styled
 } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
@@ -15,6 +16,23 @@ import { api } from "../../api";
 import { Recipe } from "../../model/model";
 import { MacroValues } from "../MacroValues";
 import { RecipeImage } from "../imageUpload/RecipeImage";
+import { isMobile } from "react-device-detect";
+
+const Container = styled(Box)(({ theme }) => ({
+  width: "30rem",
+  backgroundColor: "white",
+  margin: "2rem",
+  padding: "3rem",
+  boxShadow: "inset 0 0 8px #4b4a4a",
+  borderRadius: "10px",
+  position: "relative",
+  [theme.breakpoints.down("sm")]: {
+    width: "90%",
+    padding: "30px",
+    margin: "0",
+  },
+}));
+
 
 const GlobalRecipeDetail: React.FC = () => {
   const { name } = useParams();
@@ -42,19 +60,9 @@ const GlobalRecipeDetail: React.FC = () => {
   }
 
   return (
-    <Box
-      style={{
-        width: "30rem",
-        backgroundColor: "white",
-        margin: "2rem",
-        padding: "3rem",
-        boxShadow: "inset 0 0 8px #4b4a4a",
-        borderRadius: "10px",
-        position: "relative",
-      }}
-    >
+    <Container>
       <RecipeImage
-        width={"400px"}
+        width={isMobile ? "220px" : "400px"}
         name={data?.name}
         imageUrl={data?.imageUrl ?? null}
         editable={!global}
@@ -88,7 +96,7 @@ const GlobalRecipeDetail: React.FC = () => {
           />
         </Grid>
       </Grid>
-    </Box>
+    </Container>
   );
 };
 

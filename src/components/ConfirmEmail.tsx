@@ -1,4 +1,4 @@
-import { Alert, CircularProgress } from "@mui/material";
+import { Alert, CircularProgress, styled } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -11,10 +11,21 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../api";
 
-interface ConfirmEmailPayload {
-  email: string;
-  confirmationCode: string;
-}
+const ConfirmEmailContainer = styled(Box)(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center",
+  backgroundColor: "white",
+  margin: "0 2rem 2rem 2rem",
+  padding: "3rem",
+  boxShadow: "inset 0 0 8px #4b4a4a",
+  borderRadius: "10px",
+  [theme.breakpoints.down("sm")]: {
+    margin: "0",
+    padding: "30px 10px 30px 10px",
+  },
+}));
 
 export const ConfirmEmail: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -57,20 +68,7 @@ export const ConfirmEmail: React.FC = () => {
 
   return (
     <Container component="main" maxWidth="xs">
-      <Box
-        sx={{
-          marginTop: 0,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: "white",
-          margin: "2rem",
-          padding: "3rem",
-          boxShadow: "inset 0 0 8px #4b4a4a",
-          borderRadius: "10px",
-        }}
-      >
+      <ConfirmEmailContainer>
         <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
           {/* You can replace this with a relevant icon */}
         </Avatar>
@@ -120,7 +118,7 @@ export const ConfirmEmail: React.FC = () => {
             Confirm Account
           </Button>
         </Box>
-      </Box>
+      </ConfirmEmailContainer>
     </Container>
   );
 };

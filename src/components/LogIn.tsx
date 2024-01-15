@@ -1,5 +1,5 @@
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import { Alert, CircularProgress } from "@mui/material";
+import { Alert, CircularProgress, styled } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -15,6 +15,22 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../api";
 import useAuthToken from "../logic/useAuthToken";
+
+const LogInContainer = styled(Box)(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center",
+  backgroundColor: "white",
+  margin: "0 2rem 2rem 2rem",
+  padding: "3rem",
+  boxShadow: "inset 0 0 8px #4b4a4a",
+  borderRadius: "10px",
+  [theme.breakpoints.down("sm")]: {
+    margin: "0",
+    padding: "30px 10px 30px 10px",
+  },
+}));
 
 interface LogInResponse {
   identityToken: string;
@@ -87,20 +103,7 @@ export const LogIn = () => {
 
   return (
     <Container component="main" maxWidth="xs">
-      <Box
-        sx={{
-          marginTop: 0,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: "white",
-          margin: "2rem",
-          padding: "3rem",
-          boxShadow: "inset 0 0 8px #4b4a4a",
-          borderRadius: "10px",
-        }}
-      >
+      <LogInContainer>
         <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
           <LockOutlinedIcon />
         </Avatar>
@@ -146,7 +149,7 @@ export const LogIn = () => {
             </Grid>
           </Grid>
         </Box>
-      </Box>
+      </LogInContainer>
     </Container>
   );
 };

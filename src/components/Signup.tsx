@@ -1,5 +1,5 @@
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import { Alert, CircularProgress } from "@mui/material";
+import { Alert, CircularProgress, styled } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -9,11 +9,27 @@ import Link from "@mui/material/Link";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { useMutation } from "@tanstack/react-query";
-import { AxiosError, isAxiosError } from "axios";
+import { isAxiosError } from "axios";
 import * as React from "react";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../api";
+
+const SignUpContainer = styled(Box)(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center",
+  backgroundColor: "white",
+  margin: "0 2rem 2rem 2rem",
+  padding: "3rem",
+  boxShadow: "inset 0 0 8px #4b4a4a",
+  borderRadius: "10px",
+  [theme.breakpoints.down("sm")]: {
+    margin: "0",
+    padding: "30px 10px 30px 10px",
+  },
+}));
 
 export const SignUp: React.FC = () => {
   const navigate = useNavigate();
@@ -81,20 +97,7 @@ export const SignUp: React.FC = () => {
 
   return (
     <Container component="main" maxWidth="xs">
-      <Box
-        sx={{
-          marginTop: 0,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: "white",
-          margin: "2rem",
-          padding: "3rem",
-          boxShadow: "inset 0 0 8px #4b4a4a",
-          borderRadius: "10px",
-        }}
-      >
+      <SignUpContainer>
         <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
           <LockOutlinedIcon />
         </Avatar>
@@ -150,7 +153,7 @@ export const SignUp: React.FC = () => {
             </Grid>
           </Grid>
         </Box>
-      </Box>
+      </SignUpContainer>
     </Container>
   );
 };

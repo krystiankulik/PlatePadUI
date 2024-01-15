@@ -94,6 +94,25 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   justifyContent: "flex-end",
 }));
 
+const LogoHeader = styled("div")(({ theme }) => ({
+  display: "flex",
+  width: "100%",
+  justifyContent: "flex-start",
+  alignItems: "center",
+  marginTop: "0",
+  marginRight: "30px",
+  [theme.breakpoints.down("sm")]: {
+    justifyContent: "center",
+    marginTop: "8px",
+  },
+}));
+
+const LogoContainer = styled("div")({
+  width: "6rem",
+  marginLeft: "1rem",
+  cursor: "pointer",
+});
+
 type Props = {
   children: React.ReactNode;
 };
@@ -103,20 +122,6 @@ export function MenuDrawer(props: Props) {
 
   const { isLoggedIn, removeToken } = useAuthToken();
   const queryClient = useQueryClient();
-
-  const openRecipes = () => {
-    if (isMobile) {
-      setOpen(false);
-    }
-    navigate("/my-recipes");
-  };
-
-  const openIngredients = () => {
-    if (isMobile) {
-      setOpen(false);
-    }
-    navigate("/my-ingredients");
-  };
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -174,6 +179,65 @@ export function MenuDrawer(props: Props) {
     );
   };
 
+  const openRecipes = () => {
+    if (isMobile) {
+      setOpen(false);
+    }
+    navigate("/my-recipes");
+  };
+
+  const openIngredients = () => {
+    if (isMobile) {
+      setOpen(false);
+    }
+    navigate("/my-ingredients");
+  };
+
+  const openGlobalRecipes = () => {
+    if (isMobile) {
+      setOpen(false);
+    }
+    navigate("/global-recipes");
+  };
+
+  const openGlobalIngredients = () => {
+    if (isMobile) {
+      setOpen(false);
+    }
+    navigate("/global-ingredients");
+  };
+
+  const openLogIn = () => {
+    if (isMobile) {
+      setOpen(false);
+    }
+    navigate("/login");
+  };
+
+  const openSignUp = () => {
+    if (isMobile) {
+      setOpen(false);
+    }
+    navigate("/signup");
+  };
+
+  const openLogOut = () => {
+    if (isMobile) {
+      setOpen(false);
+    }
+    removeToken();
+    queryClient.removeQueries();
+    navigate("/");
+  };
+
+  
+  const openConfirmAccount = () => {
+    if (isMobile) {
+      setOpen(false);
+    }
+    navigate("/confirm-email");
+  };
+
   const myRecipesLink = () =>
     renderMenuItem("My Recipes", openRecipes, () => <MenuBook />);
 
@@ -183,46 +247,42 @@ export function MenuDrawer(props: Props) {
   const globalRecipesLink = () =>
     renderMenuItem(
       "PlatePad Recipes",
-      () => navigate("/global-recipes"),
+      openGlobalRecipes,
       () => <MenuBook />
     );
 
   const globalIngredientsLink = () =>
     renderMenuItem(
       "PlatePad Ingredients",
-      () => navigate("/global-ingredients"),
+      openGlobalIngredients,
       () => <ShoppingBasket />
     );
 
   const logInLink = () =>
     renderMenuItem(
       "Log In",
-      () => navigate("/login"),
+      openLogIn,
       () => <LoginIcon />
     );
 
   const signUpLink = () =>
     renderMenuItem(
       "Sign Up",
-      () => navigate("/signup"),
+      openSignUp,
       () => <AppRegistrationIcon />
     );
 
   const logOutLink = () =>
     renderMenuItem(
       "Log Out",
-      () => {
-        removeToken();
-        queryClient.removeQueries();
-        navigate("/");
-      },
+      openLogOut,
       () => <ConfirmationNumberIcon />
     );
 
   const confirmAccountLink = () =>
     renderMenuItem(
       "Confirm Account",
-      () => navigate("/confirm-email"),
+      openConfirmAccount,
       () => <ConfirmationNumberIcon />
     );
 
@@ -247,7 +307,7 @@ export function MenuDrawer(props: Props) {
     );
   };
 
-  const handleLogoCancel = () => {
+  const handleLogoClick = () => {
     navigate(`/`);
   };
 
@@ -269,19 +329,18 @@ export function MenuDrawer(props: Props) {
           >
             <MenuIcon sx={{ color: "#303030" }} />
           </IconButton>
-          <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{ color: "#303030" }}
-          >
-            <div
-              style={{ width: "6rem", marginLeft: "1rem", cursor: "pointer" }}
-              onClick={handleLogoCancel}
+          <LogoHeader>
+            <Typography
+              variant="h6"
+              noWrap
+              component="div"
+              sx={{ color: "#303030" }}
             >
-              <PlatePadLogo />
-            </div>
-          </Typography>
+              <LogoContainer onClick={handleLogoClick}>
+                <PlatePadLogo />
+              </LogoContainer>
+            </Typography>
+          </LogoHeader>
         </Toolbar>
       </AppBar>
       <Drawer

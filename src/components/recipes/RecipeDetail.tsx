@@ -12,6 +12,7 @@ import {
   List,
   ListItem,
   Typography,
+  styled,
 } from "@mui/material";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
@@ -22,6 +23,22 @@ import useAuthToken from "../../logic/useAuthToken";
 import { Recipe } from "../../model/model";
 import { MacroValues } from "../MacroValues";
 import { RecipeImage } from "../imageUpload/RecipeImage";
+import { isMobile } from "react-device-detect";
+
+const Container = styled(Box)(({ theme }) => ({
+  width: "30rem",
+  backgroundColor: "white",
+  margin: "2rem",
+  padding: "3rem",
+  boxShadow: "inset 0 0 8px #4b4a4a",
+  borderRadius: "10px",
+  position: "relative",
+  [theme.breakpoints.down("sm")]: {
+    width: "90%",
+    padding: "30px",
+    margin: "10px",
+  },
+}));
 
 const RecipeDetail: React.FC = () => {
   const { name } = useParams();
@@ -149,21 +166,11 @@ const RecipeDetail: React.FC = () => {
   );
 
   return (
-    <Box
-      style={{
-        width: "30rem",
-        backgroundColor: "white",
-        margin: "2rem",
-        padding: "3rem",
-        boxShadow: "inset 0 0 8px #4b4a4a",
-        borderRadius: "10px",
-        position: "relative",
-      }}
-    >
+    <Container>
       {renderEditButton()}
       {renderDeleteButton()}
       <RecipeImage
-        width={"400px"}
+        width={isMobile ? "220px" : "400px"} 
         name={data?.name}
         imageUrl={data?.imageUrl ?? null}
         editable={true}
@@ -181,7 +188,7 @@ const RecipeDetail: React.FC = () => {
           <List>
             {data?.ingredientValues.map((ingredientValue) => (
               <ListItem key={ingredientValue.ingredient.name}>
-                <b>{ingredientValue.ingredient.displayName}</b> :{" "}
+                <b>{ingredientValue.ingredient.name}</b> :{" "}
                 {ingredientValue.amount}g
               </ListItem>
             ))}
@@ -198,7 +205,7 @@ const RecipeDetail: React.FC = () => {
         </Grid>
       </Grid>
       {renderDialog()}
-    </Box>
+    </Container>
   );
 };
 
