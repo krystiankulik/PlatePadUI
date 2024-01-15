@@ -10,7 +10,7 @@ const Info = styled("div")(({ theme }) => ({
   color: theme.palette.primary.main,
   fontFamily: "JosefinSans",
   fontWeight: "bold",
-  fontSize: "1.2rem",
+  fontSize: "1.4rem",
   ul: {
     paddingLeft: "0",
     listStyle: "none",

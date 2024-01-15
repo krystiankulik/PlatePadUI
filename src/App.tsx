@@ -9,6 +9,7 @@ import { SignUp } from "./components/Signup";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useState } from "react";
 import { AuthContext } from "./context/AuthContext";
+import { Helmet } from "react-helmet";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -51,20 +52,23 @@ function App() {
   const value = { token, setToken };
 
   return (
-    <AuthContext.Provider value={value}>
-      <QueryClientProvider client={queryClient}>
-        <ThemeProvider theme={theme}>
-          <BrowserRouter>
-            <MenuDrawer>
-              <LogIn />
-              <SignUp />
-              <ConfirmEmail />
-            </MenuDrawer>
-          </BrowserRouter>
-        </ThemeProvider>
-        <ReactQueryDevtools initialIsOpen={false} />
-      </QueryClientProvider>
-    </AuthContext.Provider>
+    <Helmet>
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <AuthContext.Provider value={value}>
+        <QueryClientProvider client={queryClient}>
+          <ThemeProvider theme={theme}>
+            <BrowserRouter>
+              <MenuDrawer>
+                <LogIn />
+                <SignUp />
+                <ConfirmEmail />
+              </MenuDrawer>
+            </BrowserRouter>
+          </ThemeProvider>
+          <ReactQueryDevtools initialIsOpen={false} />
+        </QueryClientProvider>
+      </AuthContext.Provider>
+    </Helmet>
   );
 }
 

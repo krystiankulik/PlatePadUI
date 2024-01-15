@@ -28,20 +28,22 @@ import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import { ReactComponent as PlatePadLogo } from "../assets/platePadLogo.svg";
 import useAuthToken from "../logic/useAuthToken";
 import { ConfirmEmail } from "./ConfirmEmail";
+import { LandingPage } from "./LandingPage";
+import { LogIn } from "./LogIn";
+import { SignUp } from "./Signup";
+import { GlobalIngredients } from "./ingredients/GlobalIngredients";
+import { IngredientCreate } from "./ingredients/IngredientCreate";
 import IngredientDetail from "./ingredients/IngredientDetail";
 import IngredientEdit from "./ingredients/IngredientEdit";
 import { Ingredients } from "./ingredients/Ingredients";
-import { LandingPage } from "./LandingPage";
-import { LogIn } from "./LogIn";
-import RecipeDetail from "./recipes/RecipeDetail";
-import { Recipes } from "./recipes/Recipes";
-import { SignUp } from "./Signup";
-import { IngredientCreate } from "./ingredients/IngredientCreate";
-import { RecipeCreate } from "./recipes/RecipeCreate";
-import RecipeEdit from "./recipes/RecipeEdit";
-import { GlobalIngredients } from "./ingredients/GlobalIngredients";
-import { GlobalRecipes } from "./recipes/GlobalRecipes";
 import GlobalRecipeDetail from "./recipes/GlobalRecipeDetail";
+import { GlobalRecipes } from "./recipes/GlobalRecipes";
+import { RecipeCreate } from "./recipes/RecipeCreate";
+import RecipeDetail from "./recipes/RecipeDetail";
+import RecipeEdit from "./recipes/RecipeEdit";
+import { Recipes } from "./recipes/Recipes";
+import LogoutIcon from '@mui/icons-material/Logout';
+
 const drawerWidth = 240;
 
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
@@ -276,7 +278,7 @@ export function MenuDrawer(props: Props) {
     renderMenuItem(
       "Log Out",
       openLogOut,
-      () => <ConfirmationNumberIcon />
+      () => <LogoutIcon />
     );
 
   const confirmAccountLink = () =>
