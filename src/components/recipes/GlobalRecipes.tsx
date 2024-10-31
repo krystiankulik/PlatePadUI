@@ -15,6 +15,7 @@ import { MacroValues } from "../MacroValues";
 import { RecipeImage } from "../imageUpload/RecipeImage";
 
 const LoadingContainer = styled("div")(({ theme }) => ({
+  height: "100px",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
